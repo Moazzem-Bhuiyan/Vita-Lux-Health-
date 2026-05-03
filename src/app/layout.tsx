@@ -6,8 +6,8 @@ import { Chatbot } from "@/components/shared/Chatbot";
 
 export const metadata: Metadata = {
   title: {
-    default: "Vita Lux Health — Spa & Wellness",
-    template: "%s | Vita Lux Health",
+    default: "Aurum Star Health — Spa & Wellness",
+    template: "%s | Aurum Star Health",
   },
   description:
     "A luxury spa and wellness sanctuary where ancient healing traditions meet modern science. Book your transformative experience today.",
@@ -18,15 +18,15 @@ export const metadata: Metadata = {
     "facial",
     "holistic healing",
     "New York spa",
-    "Vita Lux",
+    "Aurum Star",
   ],
-  authors: [{ name: "Vita Lux Health" }],
+  authors: [{ name: "Aurum Star Health" }],
   openGraph: {
     type: "website",
     locale: "en_US",
     url: "https://vitaluxhealth.com",
-    siteName: "Vita Lux Health",
-    title: "Vita Lux Health — Spa & Wellness",
+    siteName: "Aurum Star Health",
+    title: "Aurum Star Health — Spa & Wellness",
     description:
       "A luxury spa and wellness sanctuary where ancient healing traditions meet modern science.",
     images: [
@@ -34,13 +34,13 @@ export const metadata: Metadata = {
         url: "https://images.unsplash.com/photo-1540555700478-4be289fbecef?w=1200&q=80",
         width: 1200,
         height: 630,
-        alt: "Vita Lux Health Spa",
+        alt: "Aurum Star Health Spa",
       },
     ],
   },
   twitter: {
     card: "summary_large_image",
-    title: "Vita Lux Health — Spa & Wellness",
+    title: "Aurum Star Health — Spa & Wellness",
     description: "Luxury spa and wellness sanctuary in New York.",
     images: ["https://images.unsplash.com/photo-1540555700478-4be289fbecef?w=1200&q=80"],
   },

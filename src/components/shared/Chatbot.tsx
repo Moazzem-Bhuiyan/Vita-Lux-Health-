@@ -15,7 +15,7 @@ const QUICK_REPLIES = [
 
 const BOT_RESPONSES: Record<string, string> = {
   default:
-    "Thank you for reaching out to Vita Lux. I'm here to help you with booking, services, pricing, and any other questions. How may I assist you today?",
+    "Thank you for reaching out to Aurum Star. I'm here to help you with booking, services, pricing, and any other questions. How may I assist you today?",
   services:
     "We offer a curated collection of luxury treatments including Swedish Massage, Hot Stone Therapy, Luminous Glow Facial, Anti-Aging Facial, Aromatherapy Healing, and our signature 24K Gold Body Ritual. Would you like to explore any of these?",
   book:
@@ -47,7 +47,7 @@ export function Chatbot() {
     {
       id: "init",
       role: "assistant",
-      content: "Welcome to Vita Lux. ✨ How may I assist your wellness journey today?",
+      content: "Welcome to Aurum Star. ✨ How may I assist your wellness journey today?",
       timestamp: new Date(),
     },
   ]);
@@ -109,7 +109,7 @@ export function Chatbot() {
             <div className="flex items-center gap-3">
               <div className="w-2 h-2 rounded-full bg-gold-500 animate-pulse-slow" />
               <div>
-                <p className="font-serif text-cream-50 text-sm">Vita Lux Concierge</p>
+                <p className="font-serif text-cream-50 text-sm">Aurum Star Concierge</p>
                 <p className="font-sans text-[10px] text-stone-400 tracking-wide">Here to assist you</p>
               </div>
             </div>

@@ -46,7 +46,7 @@ export function ServiceCard({ service }: ServiceCardProps) {
 
           {/* Footer */}
           <div className="flex items-center justify-between pt-2">
-            <p className="font-serif text-xl text-stone-900">
+            <p className=" text-xl text-stone-900">
               {formatCurrency(service.price)}
             </p>
             <span className="flex items-center gap-1.5 font-sans text-[10px] tracking-[0.15em] uppercase text-gold-600 group-hover:gap-2.5 transition-all duration-300">

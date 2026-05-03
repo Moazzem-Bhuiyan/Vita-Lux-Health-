@@ -121,7 +121,7 @@ export const SERVICES: Service[] = [
     category: "therapy",
     tagline: "Healing through sacred botanicals",
     description: "A full sensory journey using therapeutic essential oil blends to restore harmony between mind, body, and spirit.",
-    longDescription: "Aromatherapy Healing at Vita Lux is a multi-sensory experience that begins before you even enter the treatment room. Your therapist conducts an aroma consultation to select the perfect essential oil blend for your current needs—be it stress relief, energy restoration, or emotional balance. The oils are incorporated into a full-body massage, inhalation therapy, and a botanical compress treatment. The session concludes with a personalized take-home blend.",
+    longDescription: "Aromatherapy Healing at Aurum Star is a multi-sensory experience that begins before you even enter the treatment room. Your therapist conducts an aroma consultation to select the perfect essential oil blend for your current needs—be it stress relief, energy restoration, or emotional balance. The oils are incorporated into a full-body massage, inhalation therapy, and a botanical compress treatment. The session concludes with a personalized take-home blend.",
     benefits: [
       "Balances emotional and mental state",
       "Reduces anxiety and depression symptoms",
@@ -161,7 +161,7 @@ export const SERVICES: Service[] = [
     category: "wellness",
     tagline: "A complete reset for the modern soul",
     description: "A half-day wellness journey combining meditation, sound healing, therapeutic massage, and a nourishing spa cuisine lunch.",
-    longDescription: "The Vita Lux Wellness Immersion is the ultimate escape—a four-hour journey designed to completely reset the nervous system and restore vitality. Beginning with a guided breathwork and meditation session, you'll move into a private sound healing bath using crystal singing bowls and Tibetan instruments. A customized therapeutic massage follows, then a mindful spa cuisine lunch featuring organic, locally-sourced ingredients chosen for their nourishing properties.",
+    longDescription: "The Aurum Star Wellness Immersion is the ultimate escape—a four-hour journey designed to completely reset the nervous system and restore vitality. Beginning with a guided breathwork and meditation session, you'll move into a private sound healing bath using crystal singing bowls and Tibetan instruments. A customized therapeutic massage follows, then a mindful spa cuisine lunch featuring organic, locally-sourced ingredients chosen for their nourishing properties.",
     benefits: [
       "Complete nervous system reset",
       "Profound stress relief and mental clarity",

@@ -16,7 +16,7 @@ const SAMPLE_CONTENT = [
   "For decades, massage was considered a luxury—a pleasant indulgence with few measurable health benefits. That perception has changed dramatically. A landmark study published in the International Journal of Neuroscience found that participants who received regular therapeutic massage showed significant reductions in cortisol (the primary stress hormone) and measurable increases in dopamine and serotonin—the neurotransmitters associated with mood regulation, focus, and emotional resilience.",
   "Perhaps most remarkably, the effects are not confined to the duration of the treatment. Brain imaging studies reveal that a single 60-minute session can reduce activity in the amygdala—the brain's threat-detection center—for up to 48 hours afterward. This suggests that regular therapeutic touch doesn't merely provide temporary relief; it may actually reshape neural pathways over time.",
   "The implications for stress-related conditions are profound. Chronic stress is now understood to be a root cause or significant contributing factor in over 75% of all physician visits in the United States. Conditions ranging from cardiovascular disease and autoimmune disorders to insomnia and depression all have measurable stress components. A wellness practice that addresses stress at the neurological level—rather than simply masking symptoms—represents a meaningful shift in how we approach health.",
-  "At Vita Lux, our therapists are trained not just in technique, but in the science behind each modality. Understanding why a particular stroke or pressure point activates specific neural responses allows our team to customize treatments with a level of precision that goes far beyond conventional spa offerings. Every session is a collaboration between clinical knowledge and intuitive artistry.",
+  "At Aurum Star, our therapists are trained not just in technique, but in the science behind each modality. Understanding why a particular stroke or pressure point activates specific neural responses allows our team to customize treatments with a level of precision that goes far beyond conventional spa offerings. Every session is a collaboration between clinical knowledge and intuitive artistry.",
   "The path to lasting wellness is rarely a single dramatic intervention. More often, it is the cumulative effect of consistent, intentional practices—of showing up for yourself with regularity and care. Therapeutic massage, when approached not as occasional treat but as a cornerstone of a holistic wellness strategy, has the potential to meaningfully transform your relationship with stress, your body, and your capacity for joy.",
 ];
 
@@ -159,7 +159,7 @@ export function BlogDetailContent({ post }: Props) {
                   </div>
                 </div>
                 <p className="font-sans text-sm text-stone-500 font-light leading-relaxed">
-                  A dedicated member of the Vita Lux wellness team, bringing years of expertise and passion for holistic health to every article and treatment.
+                  A dedicated member of the Aurum Star wellness team, bringing years of expertise and passion for holistic health to every article and treatment.
                 </p>
               </div>
 

@@ -93,7 +93,7 @@ export function Hero() {
               { value: "4.9★", label: "Average Rating" },
             ].map(({ value, label }) => (
               <div key={label}>
-                <p className="font-serif text-2xl text-gold-400">{value}</p>
+                <p className=" text-2xl text-gold-400">{value}</p>
                 <p className="font-sans text-[10px] tracking-[0.15em] uppercase text-cream-100/50 mt-1">{label}</p>
               </div>
             ))}

@@ -6,6 +6,8 @@ import { usePathname } from "next/navigation";
 import { Menu, X, Phone } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/Button";
+import Logo from "@/assets/Logo/Logo.png";
+import Image from "next/image";
 
 const NAV_LINKS = [
   { label: "Services", href: "/services" },
@@ -45,13 +47,13 @@ export function Navbar() {
         <div className="container-luxury flex items-center justify-between">
           {/* Logo */}
           <Link href="/" className="flex flex-col leading-none group">
-            <span
+            {/* <span
               className={cn(
                 "font-serif text-xl md:text-2xl tracking-wide transition-colors duration-300",
                 isTransparent ? "text-cream-50" : "text-stone-900"
               )}
             >
-              Vita Lux
+              Aurum Star
             </span>
             <span
               className={cn(
@@ -60,7 +62,9 @@ export function Navbar() {
               )}
             >
               Health & Wellness
-            </span>
+            </span> */}
+            {/*  */}
+            <Image src={Logo} alt="Logo" width={100} height={100} />
           </Link>
 
           {/* Desktop Nav */}

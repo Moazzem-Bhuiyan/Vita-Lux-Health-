@@ -59,7 +59,7 @@ export function Testimonials() {
             { value: "24,000+", label: "Happy Guests" },
           ].map(({ value, label }) => (
             <div key={label} className="space-y-1">
-              <p className="font-serif text-2xl text-stone-900">{value}</p>
+              <p className=" text-2xl text-stone-900">{value}</p>
               <p className="font-sans text-[10px] tracking-[0.2em] uppercase text-stone-400">{label}</p>
             </div>
           ))}

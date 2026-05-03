@@ -7,9 +7,9 @@ import { Promotions } from "@/sections/home/Promotions";
 import { SocialMedia } from "@/sections/home/SocialMedia";
 
 export const metadata: Metadata = {
-  title: "Vita Lux Health — Luxury Spa & Wellness",
+  title: "Aurum Star Health — Luxury Spa & Wellness",
   description:
-    "Experience transformative wellness at Vita Lux Health. Luxury spa treatments, holistic therapies, and personalized wellness programs in New York.",
+    "Experience transformative wellness at Aurum Star Health. Luxury spa treatments, holistic therapies, and personalized wellness programs in New York.",
 };
 
 export default function HomePage() {

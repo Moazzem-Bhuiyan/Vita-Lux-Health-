@@ -120,7 +120,7 @@ export function ServicesPageContent() {
                       {service.description}
                     </p>
                     <div className="flex items-center justify-between pt-3 border-t border-stone-100">
-                      <span className="font-serif text-2xl text-stone-900">
+                      <span className="text-2xl text-stone-900">
                         {formatCurrency(service.price)}
                       </span>
                       <span className="flex items-center gap-1 font-sans text-[10px] tracking-widest uppercase text-gold-600 group-hover:gap-2 transition-all">

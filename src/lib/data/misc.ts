@@ -6,7 +6,7 @@ export const TESTIMONIALS: Testimonial[] = [
     name: "Isabelle Fontaine",
     location: "New York, NY",
     rating: 5,
-    text: "The 24K Gold Body Ritual was unlike anything I've ever experienced. My skin was absolutely luminous for days afterward. Vita Lux has set a new standard for what luxury spa means.",
+    text: "The 24K Gold Body Ritual was unlike anything I've ever experienced. My skin was absolutely luminous for days afterward. Aurum Star has set a new standard for what luxury spa means.",
     service: "24K Gold Body Ritual",
     date: "April 2026",
   },
@@ -24,7 +24,7 @@ export const TESTIMONIALS: Testimonial[] = [
     name: "Priya Mehta",
     location: "Dubai, UAE",
     rating: 5,
-    text: "I've visited top spas across four continents, and Vita Lux stands apart. The Luminous Glow Facial transformed my skin in a single session. The therapists are true artists.",
+    text: "I've visited top spas across four continents, and Aurum Star stands apart. The Luminous Glow Facial transformed my skin in a single session. The therapists are true artists.",
     service: "Luminous Glow Facial",
     date: "March 2026",
   },
@@ -51,7 +51,7 @@ export const TESTIMONIALS: Testimonial[] = [
     name: "Aiko Yamamoto",
     location: "Tokyo, Japan",
     rating: 5,
-    text: "Vita Lux perfectly balances clinical precision with soulful care. Their Aromatherapy Healing session left me in a state of peace I carry with me still. I return every visit to New York.",
+    text: "Aurum Star perfectly balances clinical precision with soulful care. Their Aromatherapy Healing session left me in a state of peace I carry with me still. I return every visit to New York.",
     service: "Aromatherapy Healing",
     date: "January 2026",
   },
@@ -103,7 +103,7 @@ export const THERAPISTS: Therapist[] = [
 export const LOCATIONS: Location[] = [
   {
     id: "loc-001",
-    name: "Vita Lux Midtown",
+    name: "Aurum Star Midtown",
     address: "142 Fifth Avenue, Suite 800",
     city: "New York, NY 10011",
     phone: "+1 (212) 555-0192",
@@ -117,7 +117,7 @@ export const LOCATIONS: Location[] = [
   },
   {
     id: "loc-002",
-    name: "Vita Lux Tribeca",
+    name: "Aurum Star Tribeca",
     address: "38 Hudson Street, Ground Floor",
     city: "New York, NY 10013",
     phone: "+1 (212) 555-0247",
@@ -131,7 +131,7 @@ export const LOCATIONS: Location[] = [
   },
   {
     id: "loc-003",
-    name: "Vita Lux Hamptons",
+    name: "Aurum Star Hamptons",
     address: "1 Ocean Road",
     city: "Southampton, NY 11968",
     phone: "+1 (631) 555-0183",
@@ -158,7 +158,7 @@ export const PROMOTIONS: Promotion[] = [
   {
     id: "promo-002",
     title: "New Member Welcome Gift",
-    description: "First time at Vita Lux? Experience our signature Swedish Massage at half price. Your journey to extraordinary wellness begins here.",
+    description: "First time at Aurum Star? Experience our signature Swedish Massage at half price. Your journey to extraordinary wellness begins here.",
     discount: "50% Off",
     validUntil: "2026-12-31",
     code: "WELCOME50",

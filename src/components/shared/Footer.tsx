@@ -46,7 +46,7 @@ export function Footer() {
           {/* Brand */}
           <div className="md:col-span-4 space-y-6">
             <div>
-              <p className="font-serif text-3xl text-cream-50 tracking-wide">Vita Lux</p>
+              <p className="font-serif text-3xl text-cream-50 tracking-wide">Aurum Star</p>
               <p className="font-sans text-[9px] tracking-[0.3em] uppercase text-gold-500 mt-1">
                 Health & Wellness
               </p>
@@ -113,7 +113,7 @@ export function Footer() {
         {/* Bottom row */}
         <div className="pt-8 flex flex-col md:flex-row items-center justify-between gap-4">
           <p className="font-sans text-xs text-stone-600">
-            © {new Date().getFullYear()} Vita Lux Health. All rights reserved.
+            © {new Date().getFullYear()} Aurum Star Health. All rights reserved.
           </p>
           <div className="flex items-center gap-6">
             {["Privacy Policy", "Terms of Use", "Accessibility"].map((item) => (

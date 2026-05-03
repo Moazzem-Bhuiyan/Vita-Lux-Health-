@@ -59,7 +59,7 @@ export function ServiceStep({ selectedServiceId, onSelect }: Props) {
                           {formatDuration(service.duration)}
                         </span>
                       </div>
-                      <p className="font-serif text-gold-700 mt-1">
+                      <p className=" text-gold-700 mt-1">
                         {formatCurrency(service.price)}
                       </p>
                     </div>

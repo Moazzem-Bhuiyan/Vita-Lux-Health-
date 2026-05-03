@@ -117,7 +117,7 @@ export function ServiceDetailContent({ service }: Props) {
                 </div>
 
                 {/* Quick select time */}
-                <div className="space-y-3">
+                <div className="!space-y-3">
                   <p className="font-sans text-[10px] tracking-[0.2em] uppercase text-stone-500">
                     Quick Book
                   </p>
@@ -133,18 +133,24 @@ export function ServiceDetailContent({ service }: Props) {
                   </div>
                 </div>
 
-                <Link href={`/booking?service=${service.id}`}>
+               <div className="space-y-3">
+                <div>
+                   <Link href={`/booking?service=${service.id}`}>
                   <Button fullWidth size="lg" className="bg-stone-900 text-cream-50 hover:bg-stone-800">
                     Reserve This Experience
                     <ArrowRight size={14} />
                   </Button>
                 </Link>
+                </div>
 
-                <Link href="/booking">
+               <div>
+                 <Link href="/booking">
                   <Button variant="secondary" fullWidth size="sm">
                     View Full Availability
                   </Button>
                 </Link>
+               </div>
+               </div>
 
                 {/* Extras */}
                 <div className="pt-4 border-t border-stone-100 space-y-2">
@@ -188,7 +194,7 @@ export function ServiceDetailContent({ service }: Props) {
                           {s.name}
                         </h3>
                         <div className="flex items-center justify-between">
-                          <span className="font-serif text-lg text-stone-700">
+                          <span className="text-lg text-stone-700">
                             {formatCurrency(s.price)}
                           </span>
                           <span className="flex items-center gap-1 font-sans text-[10px] tracking-wide uppercase text-gold-600">

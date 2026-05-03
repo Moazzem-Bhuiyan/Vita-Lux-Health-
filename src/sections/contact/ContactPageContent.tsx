@@ -78,7 +78,7 @@ export function ContactPageContent() {
                     : "border-transparent text-stone-500 hover:text-stone-300"
                 }`}
               >
-                {loc.name.replace("Vita Lux ", "")}
+                {loc.name.replace("Aurum Star ", "")}
               </button>
             ))}
           </div>

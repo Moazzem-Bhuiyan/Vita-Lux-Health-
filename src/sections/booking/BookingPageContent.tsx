@@ -187,7 +187,7 @@ export function BookingPageContent() {
 
                       <div className="pt-3 border-t border-stone-100 flex items-center justify-between">
                         <p className="font-sans text-xs text-stone-400">Estimated Total</p>
-                        <p className="font-serif text-xl text-stone-900">
+                        <p className=" text-xl text-stone-900">
                           {formatCurrency(selectedService.price)}
                         </p>
                       </div>

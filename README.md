@@ -1,4 +1,4 @@
-# Vita Lux Health — Spa & Wellness Platform
+# Aurum Star Health — Spa & Wellness Platform
 
 A luxury spa and wellness customer-facing website built with **Next.js 14 App Router**, **TypeScript**, and **Tailwind CSS**. Production-grade, fully modular, and ready for backend integration.
 
@@ -176,4 +176,4 @@ All data fetching is currently done from static mock files in `src/lib/data/`. W
 
 ---
 
-*Built with care for Vita Lux Health. © 2026 All rights reserved.*
+*Built with care for Aurum Star Health. © 2026 All rights reserved.*

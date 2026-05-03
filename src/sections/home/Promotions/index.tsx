@@ -40,7 +40,7 @@ export function Promotions() {
 
               {/* Discount */}
               <div className="mb-6">
-                <p className="font-serif text-4xl text-gold-400 leading-none">{promo.discount}</p>
+                <p className="text-4xl text-gold-400 leading-none">{promo.discount}</p>
               </div>
 
               <div className="space-y-3 mb-8">

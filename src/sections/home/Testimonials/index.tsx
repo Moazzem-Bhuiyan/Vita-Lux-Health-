@@ -7,7 +7,7 @@ function TestimonialCard({ testimonial }: { testimonial: Testimonial }) {
   return (
     <article className="bg-white border border-stone-100 p-8 space-y-6 hover:border-gold-500/20 hover:shadow-luxury transition-all duration-400 group">
       {/* Quote mark */}
-      <div className="font-serif text-6xl text-gold-300/50 leading-none select-none">"</div>
+      <div className="font-serif text-6xl text-gold-300/50 leading-none select-none">“</div>
 
       {/* Stars */}
       <StarRating rating={testimonial.rating} size="sm" />

@@ -1,132 +1,205 @@
-import Link from "next/link";
-import { Instagram, Facebook, Youtube } from "lucide-react";
+'use client';
 
-const FOOTER_LINKS = {
-  Services: [
-    { label: "Massage", href: "/services?category=massage" },
-    { label: "Facial", href: "/services?category=facial" },
-    { label: "Body Rituals", href: "/services?category=body" },
-    { label: "Therapy", href: "/services?category=therapy" },
-    { label: "Wellness", href: "/services?category=wellness" },
+import { useRef, useState } from 'react';
+import { motion, useInView } from 'framer-motion';
+import { Facebook, Twitter, Instagram, ArrowRight, Phone, Mail, MapPin } from 'lucide-react';
+import Logo from '@/assets/Logo/Logo.png';
+import Image from 'next/image';
+
+const footerLinks = {
+  services: [
+    'Weightloss',
+    'Anti-aging',
+    'Depression and Anxiety',
+    'Hormone Optimization',
+    'Energy Boost',
+    'Red Light Therapy',
+    'Hyperbaric Therapy',
   ],
-  Discover: [
-    { label: "Our Story", href: "/#about" },
-    { label: "Journal", href: "/blog" },
-    { label: "Memberships", href: "/#memberships" },
-    { label: "Gift Cards", href: "/#gift" },
-  ],
-  Visit: [
-    { label: "Midtown Location", href: "/contact" },
-    { label: "Tribeca Location", href: "/contact" },
-    { label: "The Hamptons", href: "/contact" },
-    { label: "Concierge", href: "/contact" },
-  ],
+  navigation: ['Home', 'Join us', 'Contact us', 'About us', 'Services', 'Testimonials'],
+  legal: ['Blog', 'FAQ', 'Help Center', 'Privacy Policy', 'Terms of Service'],
 };
 
-const SOCIAL_LINKS = [
-  { icon: Instagram, href: "#", label: "Instagram" },
-  { icon: Facebook, href: "#", label: "Facebook" },
-  { icon: Youtube, href: "#", label: "Youtube" },
-];
+export default function Footer() {
+  const sectionRef = useRef<HTMLElement>(null);
+  const isInView = useInView(sectionRef, { once: true, margin: '-60px' });
+  const [email, setEmail] = useState('');
 
-export function Footer() {
   return (
-    <footer className="bg-stone-900 text-cream-100 relative overflow-hidden">
-      {/* Subtle texture */}
-      <div
-        className="absolute inset-0 opacity-5"
-        style={{
-          backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")`,
-        }}
-      />
-
-      <div className="container-luxury relative py-20">
-        {/* Top row */}
-        <div className="grid grid-cols-1 md:grid-cols-12 gap-12 md:gap-8 pb-16 border-b border-stone-800">
-          {/* Brand */}
-          <div className="md:col-span-4 space-y-6">
-            <div>
-              <p className="font-serif text-3xl text-cream-50 tracking-wide">Aurum Star</p>
-              <p className="font-sans text-[9px] tracking-[0.3em] uppercase text-gold-500 mt-1">
-                Health & Wellness
-              </p>
-            </div>
-            <p className="font-sans text-sm text-stone-400 leading-relaxed font-light max-w-xs">
-              A sanctuary of refined wellness, where ancient healing traditions 
-              meet modern luxury. We invite you to discover the art of true renewal.
+    <footer ref={sectionRef} className="bg-[#140d04]">
+      {/* Main footer body */}
+      <div className="max-w-[1440px] mx-auto px-8 md:px-12 pt-20 pb-10">
+        {/* Top: tagline + socials */}
+        <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-6 mb-16">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={isInView ? { opacity: 1, y: 0 } : {}}
+            transition={{ duration: 0.6 }}
+          >
+            <p className="text-[11px] tracking-[0.25em] text-white/40 uppercase mb-3 flex items-center gap-3">
+              Mental Wellness Reimagined
+              <span className="block h-px w-14 bg-white/20" />
             </p>
-            <div className="flex items-center gap-4">
-              {SOCIAL_LINKS.map(({ icon: Icon, href, label }) => (
-                <a
-                  key={label}
-                  href={href}
-                  aria-label={label}
-                  className="w-9 h-9 border border-stone-700 flex items-center justify-center text-stone-500 hover:text-gold-500 hover:border-gold-500/50 transition-all duration-300"
-                >
-                  <Icon size={15} />
-                </a>
-              ))}
-            </div>
-          </div>
+            <h3 className="text-3xl md:text-[54px] text-white font-bold leading-tight">
+              Wellness goes
+              <br />
+              beyond treatment
+            </h3>
+          </motion.div>
 
-          {/* Links */}
-          <div className="md:col-span-8 grid grid-cols-3 gap-8">
-            {Object.entries(FOOTER_LINKS).map(([heading, links]) => (
-              <div key={heading} className="space-y-4">
-                <p className="font-sans text-[9px] tracking-[0.25em] uppercase text-gold-500 font-medium">
-                  {heading}
-                </p>
-                <ul className="space-y-3">
-                  {links.map((link) => (
-                    <li key={link.label}>
-                      <Link
-                        href={link.href}
-                        className="font-sans text-sm text-stone-400 hover:text-cream-100 transition-colors duration-200 font-light"
-                      >
-                        {link.label}
-                      </Link>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            ))}
-          </div>
-        </div>
-
-        {/* Awards / Certification strip */}
-        <div className="py-10 border-b border-stone-800 grid grid-cols-2 md:grid-cols-4 gap-6">
-          {[
-            "Spa of the Year 2025",
-            "Top 10 Luxury Spas — Condé Nast",
-            "5-Star Wellness Certified",
-            "Organic & Sustainable Practices",
-          ].map((award) => (
-            <div key={award} className="flex items-center gap-2.5">
-              <div className="w-5 h-5 rounded-full border border-gold-600/50 flex items-center justify-center flex-shrink-0">
-                <div className="w-1.5 h-1.5 bg-gold-500 rounded-full" />
-              </div>
-              <p className="font-sans text-[11px] text-stone-500 leading-tight">{award}</p>
-            </div>
-          ))}
-        </div>
-
-        {/* Bottom row */}
-        <div className="pt-8 flex flex-col md:flex-row items-center justify-between gap-4">
-          <p className="font-sans text-xs text-stone-600">
-            © {new Date().getFullYear()} Aurum Star Health. All rights reserved.
-          </p>
-          <div className="flex items-center gap-6">
-            {["Privacy Policy", "Terms of Use", "Accessibility"].map((item) => (
-              <Link
-                key={item}
-                href="#"
-                className="font-sans text-xs text-stone-600 hover:text-stone-400 transition-colors"
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={isInView ? { opacity: 1, y: 0 } : {}}
+            transition={{ duration: 0.6, delay: 0.1 }}
+            className="flex items-center gap-3"
+          >
+            {[
+              { Icon: Facebook, href: '#' },
+              { Icon: Twitter, href: '#' },
+              { Icon: Instagram, href: '#' },
+            ].map(({ Icon, href }, i) => (
+              <a
+                key={i}
+                href={href}
+                className="w-11 h-11 rounded-full border border-white/20 flex items-center justify-center text-white/60 hover:text-white hover:border-white/50 hover:bg-white/10 transition-all duration-300"
               >
-                {item}
-              </Link>
+                <Icon size={17} />
+              </a>
             ))}
-          </div>
+          </motion.div>
         </div>
+
+        {/* Grid: Links + Contact */}
+        <motion.div
+          initial={{ opacity: 0, y: 30 }}
+          animate={isInView ? { opacity: 1, y: 0 } : {}}
+          transition={{ duration: 0.7, delay: 0.15 }}
+          className="grid grid-cols-2 md:grid-cols-5 gap-10 pb-14 border-b border-white/8"
+        >
+          {/* Services */}
+          <div>
+            <h4 className="text-white text-[24px] font-medium mb-5">Services</h4>
+            <ul className="space-y-3">
+              {footerLinks.services.map((link) => (
+                <li key={link}>
+                  <a
+                    href="#"
+                    className="text-white/45 text-sm hover:text-white/80 transition-colors duration-200"
+                  >
+                    {link}
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          {/* Navigation */}
+          <div>
+            <h4 className="text-white text-[24px] font-medium mb-5">Navigation</h4>
+            <ul className="space-y-3">
+              {footerLinks.navigation.map((link) => (
+                <li key={link}>
+                  <a
+                    href="#"
+                    className="text-white/45 text-sm hover:text-white/80 transition-colors duration-200"
+                  >
+                    {link}
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          {/* Legal */}
+          <div>
+            <h4 className="text-white text-[24px] font-medium mb-5">Legal</h4>
+            <ul className="space-y-3">
+              {footerLinks.legal.map((link) => (
+                <li key={link}>
+                  <a
+                    href="#"
+                    className="text-white/45 text-sm hover:text-white/80 transition-colors duration-200"
+                  >
+                    {link}
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          {/* Contact + Logo */}
+          <div className="col-span-2 md:col-span-2 flex flex-col gap-8">
+            {/* Email input */}
+            <div className="flex items-stretch">
+              <input
+                type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                placeholder="Enter your Email address"
+                className="flex-1 bg-white/8 border border-white/12 rounded-l-lg px-4 py-3   focus:outline-none focus:border-white/30 transition-colors"
+              />
+              <button className="bg-white/15 border border-white/12 border-l-0 px-4 rounded-r-lg text-white hover:bg-white/25 transition-colors">
+                <ArrowRight size={16} />
+              </button>
+            </div>
+
+            {/* Logo + Contact */}
+            <div className="flex flex-col md:flex-row gap-6 items-start">
+              {/* Logo */}
+              <div className="flex-shrink-0 w-[197px] h-[198px]">
+                <div className="w-full h-ful">
+                  <Image src={Logo} alt="Aurum Health" className=" object-contain " />
+                </div>
+              </div>
+
+              {/* Contact details */}
+              <div className="space-y-3">
+                <a
+                  href="tel:8008543453"
+                  className="flex items-center gap-2.5 text-white/60 text-sm hover:text-white/90 transition-colors group"
+                >
+                  <Phone size={14} className="text-white/40 group-hover:text-white/70" />
+                  (800) 854-3453
+                </a>
+                <a
+                  href="mailto:hello@acmesaw.com"
+                  className="flex items-center gap-2.5 text-white/60 text-sm hover:text-white/90 transition-colors group"
+                >
+                  <Mail size={14} className="text-white/40 group-hover:text-white/70" />
+                  hello@acmesaw.com
+                </a>
+                <div className="flex items-start gap-2.5 text-white/60 text-sm">
+                  <MapPin size={14} className="text-white/40 mt-0.5 flex-shrink-0" />
+                  <span>
+                    Acme Saw Delivery Center
+                    <br />
+                    121 Rimmons Road, Suite 124
+                    <br />
+                    Bridgeport, CT 06477, USA
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </motion.div>
+
+        {/* Bottom bar */}
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={isInView ? { opacity: 1 } : {}}
+          transition={{ duration: 0.6, delay: 0.3 }}
+          className="flex flex-col md:flex-row items-center justify-between gap-4 pt-8"
+        >
+          <p className="text-white/35 text-sm">© 2025 Aurum Health. All rights reserved.</p>
+          <div className="flex items-center gap-6">
+            <a href="#" className="text-white/35 text-sm hover:text-white/70 transition-colors">
+              Privacy & Policy
+            </a>
+            <a href="#" className="text-white/35 text-sm hover:text-white/70 transition-colors">
+              Terms & Conditions
+            </a>
+          </div>
+        </motion.div>
       </div>
     </footer>
   );

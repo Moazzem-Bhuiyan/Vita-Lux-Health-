@@ -1,26 +1,33 @@
-import { Metadata } from "next";
-import { Hero } from "@/sections/home/Hero";
-import { ServicesPreview } from "@/sections/home/ServicesPreview";
-import { BookingWidget } from "@/sections/home/BookingWidget";
-import { Testimonials } from "@/sections/home/Testimonials";
-import { Promotions } from "@/sections/home/Promotions";
-import { SocialMedia } from "@/sections/home/SocialMedia";
+import { Metadata } from 'next';
+import { Hero } from '@/sections/home/Hero';
+import AboutUs from '@/sections/home/AboutUs';
+import AboutUsSection from '@/sections/home/AboutUsSecond';
+import ServicesSection from '@/sections/home/ServiceSection/ServicesSection';
+import TestimonialsSection from '@/sections/home/TestomonialSection/TestimonialsSection';
+import ContactSection from '@/sections/home/ContactSection/ContactSection';
+import NewsletterBanner from '@/sections/home/NewsLetterSection/NewsletterBanner';
 
 export const metadata: Metadata = {
-  title: "Aurum Star Health — Luxury Spa & Wellness",
+  title: 'Aurum Star Health — Luxury Spa & Wellness',
   description:
-    "Experience transformative wellness at Aurum Star Health. Luxury spa treatments, holistic therapies, and personalized wellness programs in New York.",
+    'Experience transformative wellness at Aurum Star Health. Luxury spa treatments, holistic therapies, and personalized wellness programs in New York.',
 };
 
 export default function HomePage() {
   return (
     <>
       <Hero />
-      <ServicesPreview />
+      <AboutUs />
+      <AboutUsSection />
+      <ServicesSection />
+      <TestimonialsSection />
+      <ContactSection />
+      <NewsletterBanner />
+      {/* <ServicesPreview />
       <BookingWidget />
       <Testimonials />
       <Promotions />
-      <SocialMedia />
+      <SocialMedia /> */}
     </>
   );
 }

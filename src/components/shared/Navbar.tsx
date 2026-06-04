@@ -84,7 +84,7 @@ export function Navbar() {
             {/* CTA & Phone */}
             <div className="hidden md:flex items-center gap-4">
               <a
-                href="tel:+12125550192"
+                href="/login"
                 className={cn(
                   'flex items-center gap-1.5 font-sans text-[11px] tracking-wide transition-colors duration-300',
                   isTransparent

@@ -35,7 +35,7 @@ export function Navbar() {
     setIsMobileOpen(false);
   }, [pathname]);
 
-  const isHome = pathname === '/';
+  const isHome = pathname === '/' || pathname === '/service/serviceDetails' || pathname === '/blog';
   const isTransparent = isHome && !isScrolled;
 
   return (

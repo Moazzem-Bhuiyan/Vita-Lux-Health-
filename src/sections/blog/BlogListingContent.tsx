@@ -1,32 +1,30 @@
-"use client";
+'use client';
 
-import { useState } from "react";
-import Image from "next/image";
-import Link from "next/link";
-import { Clock, ArrowRight } from "lucide-react";
-import { BLOG_POSTS } from "@/lib/data/blog";
-import { SectionHeader } from "@/components/ui/SectionHeader";
-import { Badge } from "@/components/ui/Badge";
-import { formatDate, cn } from "@/lib/utils";
-import type { BlogCategory } from "@/types";
+import { useState } from 'react';
+import Image from 'next/image';
+import Link from 'next/link';
+import { Clock, ArrowRight } from 'lucide-react';
+import { BLOG_POSTS } from '@/lib/data/blog';
+import { Badge } from '@/components/ui/Badge';
+import { formatDate, cn } from '@/lib/utils';
+import type { BlogCategory } from '@/types';
+import { BlogHero } from './BlogHero';
 
-const CATEGORIES: { id: BlogCategory | "all"; label: string }[] = [
-  { id: "all", label: "All Articles" },
-  { id: "wellness", label: "Wellness" },
-  { id: "skincare", label: "Skincare" },
-  { id: "massage", label: "Massage" },
-  { id: "nutrition", label: "Nutrition" },
-  { id: "mindfulness", label: "Mindfulness" },
-  { id: "lifestyle", label: "Lifestyle" },
+const CATEGORIES: { id: BlogCategory | 'all'; label: string }[] = [
+  { id: 'all', label: 'All Articles' },
+  { id: 'wellness', label: 'Wellness' },
+  { id: 'skincare', label: 'Skincare' },
+  { id: 'massage', label: 'Massage' },
+  { id: 'nutrition', label: 'Nutrition' },
+  { id: 'mindfulness', label: 'Mindfulness' },
+  { id: 'lifestyle', label: 'Lifestyle' },
 ];
 
 export function BlogListingContent() {
-  const [activeCategory, setActiveCategory] = useState<BlogCategory | "all">("all");
+  const [activeCategory, setActiveCategory] = useState<BlogCategory | 'all'>('all');
 
   const filtered =
-    activeCategory === "all"
-      ? BLOG_POSTS
-      : BLOG_POSTS.filter((p) => p.category === activeCategory);
+    activeCategory === 'all' ? BLOG_POSTS : BLOG_POSTS.filter((p) => p.category === activeCategory);
 
   const featured = BLOG_POSTS.find((p) => p.featured);
   const rest = filtered.filter((p) => p.id !== featured?.id);
@@ -34,22 +32,10 @@ export function BlogListingContent() {
   return (
     <>
       {/* Page Hero */}
-      <div className="bg-stone-900 pt-40 pb-20 text-center relative overflow-hidden">
-        <div className="absolute inset-0 opacity-10"
-          style={{ backgroundImage: `url('https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=1600&q=80')`, backgroundSize: 'cover', backgroundPosition: 'center' }}
-        />
-        <div className="container-luxury relative">
-          <SectionHeader
-            eyebrow="Wellness Journal"
-            heading="The Art of Living Well"
-            subheading="Expert perspectives on wellness, beauty, mindfulness, and the science of self-care."
-            light
-          />
-        </div>
-      </div>
+      <BlogHero />
 
       {/* Featured post */}
-      {featured && activeCategory === "all" && (
+      {featured && activeCategory === 'all' && (
         <section className="bg-cream-50 pt-20">
           <div className="container-luxury">
             <Link href={`/blog/${featured.slug}`} className="group block">
@@ -67,12 +53,12 @@ export function BlogListingContent() {
                 <div className="p-10 lg:p-14 flex flex-col justify-center space-y-5 bg-white">
                   <div className="flex items-center gap-3">
                     <Badge label={featured.category} variant="gold" />
-                    <span className="font-sans text-[10px] text-stone-400">Featured</span>
+                    <span className=" text-[10px] text-stone-400">Featured</span>
                   </div>
                   <h2 className="font-serif text-display-md text-stone-900 font-light leading-tight group-hover:text-gold-700 transition-colors duration-300">
                     {featured.title}
                   </h2>
-                  <p className="font-sans text-stone-500 font-light leading-relaxed text-sm">
+                  <p className=" text-stone-500 font-light leading-relaxed text-sm">
                     {featured.excerpt}
                   </p>
                   <div className="flex items-center gap-4 pt-2">
@@ -87,8 +73,12 @@ export function BlogListingContent() {
                         />
                       </div>
                       <div>
-                        <p className="font-sans text-xs text-stone-700 font-medium">{featured.author.name}</p>
-                        <p className="font-sans text-[10px] text-stone-400">{featured.author.title}</p>
+                        <p className="font-sans text-xs text-stone-700 font-medium">
+                          {featured.author.name}
+                        </p>
+                        <p className="font-sans text-[10px] text-stone-400">
+                          {featured.author.title}
+                        </p>
                       </div>
                     </div>
                     <span className="text-stone-200">·</span>
@@ -116,10 +106,10 @@ export function BlogListingContent() {
                 key={cat.id}
                 onClick={() => setActiveCategory(cat.id)}
                 className={cn(
-                  "flex-shrink-0 font-sans text-[10px] tracking-[0.2em] uppercase px-4 py-2 transition-all duration-200",
+                  'flex-shrink-0 font-normal  text-[12px] tracking-[0.2em] uppercase px-4 py-2 transition-all duration-200',
                   activeCategory === cat.id
-                    ? "bg-stone-900 text-cream-50"
-                    : "text-stone-500 hover:text-stone-800 hover:bg-stone-100"
+                    ? 'bg-stone-900 text-cream-50'
+                    : 'text-stone-500 hover:text-stone-800 hover:bg-stone-100'
                 )}
               >
                 {cat.label}
@@ -153,7 +143,7 @@ export function BlogListingContent() {
                         <span className="font-sans text-[10px]">{post.readTime} min</span>
                       </div>
                     </div>
-                    <h2 className="font-serif text-xl text-stone-900 leading-snug group-hover:text-gold-700 transition-colors duration-300 flex-1">
+                    <h2 className="font-display text-display-sm md:text-[24px] text-black font-bold leading-snug group-hover:text-gold-700 transition-colors duration-300 flex-1">
                       {post.title}
                     </h2>
                     <p className="font-sans text-sm text-stone-500 font-light leading-relaxed line-clamp-2">

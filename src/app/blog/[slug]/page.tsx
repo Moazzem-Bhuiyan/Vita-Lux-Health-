@@ -1,7 +1,7 @@
-import type { Metadata } from "next";
-import { notFound } from "next/navigation";
-import { getBlogPostBySlug, BLOG_POSTS } from "@/lib/data/blog";
-import { BlogDetailContent } from "@/sections/blog/BlogDetailContent";
+import type { Metadata } from 'next';
+import { notFound } from 'next/navigation';
+import { getBlogPostBySlug, BLOG_POSTS } from '@/lib/data/blog';
+import { BlogDetailContent } from '@/sections/blog/BlogDetailContent';
 
 interface Props {
   params: { slug: string };

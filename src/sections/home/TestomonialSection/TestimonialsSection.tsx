@@ -294,6 +294,8 @@ export default function TestimonialsSection() {
                             <Image
                               src={t.avatar}
                               alt={t.name}
+                              width={4000}
+                              height={4000}
                               className="w-full h-full object-cover"
                             />
                           </div>
@@ -316,6 +318,8 @@ export default function TestimonialsSection() {
                         <div className="w-10 h-10 rounded-full overflow-hidden flex-shrink-0">
                           <Image
                             src={t.avatar}
+                            width={40}
+                            height={40}
                             alt={t.name}
                             className="w-full h-full object-cover"
                           />

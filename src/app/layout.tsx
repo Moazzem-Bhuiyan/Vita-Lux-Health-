@@ -3,6 +3,7 @@ import '@/styles/globals.css';
 import { Navbar } from '@/components/shared/Navbar';
 import { Chatbot } from '@/components/shared/Chatbot';
 import Footer from '@/components/shared/Footer';
+import NewsletterBanner from '@/sections/home/NewsLetterSection/NewsletterBanner';
 
 export const metadata: Metadata = {
   title: {
@@ -62,6 +63,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <body className="min-h-screen flex flex-col">
         <Navbar />
         <main className="flex-1">{children}</main>
+        <NewsletterBanner />
         <Footer />
         <Chatbot />
       </body>

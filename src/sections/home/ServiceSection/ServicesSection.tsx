@@ -4,6 +4,7 @@ import { useRef, useState, useEffect, useCallback } from 'react';
 import { motion, useInView, AnimatePresence } from 'framer-motion';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import Image from 'next/image';
+import { useRouter } from 'next/navigation';
 
 interface ServiceCard {
   id: number;
@@ -60,6 +61,7 @@ export default function ServicesSection() {
   const [dragOffset, setDragOffset] = useState(0);
   const autoPlayRef = useRef<NodeJS.Timeout | null>(null);
   const trackRef = useRef<HTMLDivElement>(null);
+  const router = useRouter();
 
   const visibleCount = 3;
   const totalSlides = services.length;
@@ -230,10 +232,13 @@ export default function ServicesSection() {
                     ease: [0.25, 0.46, 0.45, 0.94],
                   }}
                   className="group relative"
+                  onClick={() => router.push(`/service/serviceDetails`)}
                 >
                   <div className="relative overflow-hidden rounded-[8px] aspect-[3/4] w-[439px] h-[479px]">
                     <Image
                       src={service.image}
+                      width={2000}
+                      height={2000}
                       alt={service.alt}
                       className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
                       draggable={false}

@@ -22,7 +22,7 @@ export default function HomePage() {
       <ServicesSection />
       <TestimonialsSection />
       <ContactSection />
-      <NewsletterBanner />
+
       {/* <ServicesPreview />
       <BookingWidget />
       <Testimonials />

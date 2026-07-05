@@ -1,7 +1,4 @@
-import Link from 'next/link';
 import { ArrowDown } from 'lucide-react';
-import { Button } from '@/components/ui/Button';
-import Herobg from '@/assets/hero/serviceHero.png';
 import Icon1 from '@/assets/Stats/icon1.png';
 import Icon2 from '@/assets/Stats/icon2.png';
 import Icon3 from '@/assets/Stats/icon3.png';
@@ -111,22 +108,6 @@ export function ServiceDetailsHero({
             ))}
           </div>
         </div>
-        {/* <div className="p-12 max-w-5xl  h-96 ">
-          <div
-            className="absolute flex flex-wrap gap-5 justify-center items-center bottom-[145px] right-5 w-96 bg-white p-2 rounded-lg shadow-luxury-lg animate-fade-in"
-            style={{ animationDelay: '0.8s' }}
-          >
-            <video
-              className=" rounded-lg"
-              controls
-              poster="https://images.unsplash.com/photo-1544161515-4ab6ce6db874?w=800&q=80" // optional thumbnail
-            >
-              <source src="https://your-video-url.com/video.mp4" type="video/mp4" />
-              Your browser does not support the video tag.
-            </video>
-            <h1>Play Vedio</h1>
-          </div>
-        </div> */}
       </div>
       {/* Scroll indicator */}
       <div className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 text-cream-100/40 animate-float">

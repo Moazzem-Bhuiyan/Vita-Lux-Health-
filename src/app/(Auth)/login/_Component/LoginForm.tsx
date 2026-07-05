@@ -179,13 +179,13 @@ export default function LoginForm() {
             </div>
             <span className="text-white/40 text-xs">Remember me</span>
           </label>
-
+          {/* 
           <Link
             href="/forgetPassword"
             className="text-xs text-white/40 hover:text-[#c9a96e] transition-colors"
           >
             Forgot password?
-          </Link>
+          </Link> */}
         </div>
 
         {errors.general && (

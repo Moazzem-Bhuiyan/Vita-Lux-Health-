@@ -1,6 +1,6 @@
 import Link from 'next/link';
 import { ArrowDown } from 'lucide-react';
-import { Button } from '@/components/ui/Button';
+import { Button } from '@/components/ui';
 import Herobg from '@/assets/hero/herobg.png';
 import Icon1 from '@/assets/Stats/icon1.png';
 import Icon2 from '@/assets/Stats/icon2.png';
@@ -86,7 +86,7 @@ export function Hero() {
               <Button
                 variant="ghost"
                 size="lg"
-                className="text-black hover:text-cream-50 hover:bg-white/10 bg-white shadow-luxury-lg font-medium"
+                className="text-black hover:text-cream-50 hover:bg-white/10 bg-white shadow-luxury-lg font-medium p-5 rounded-none"
               >
                 Our Services
               </Button>

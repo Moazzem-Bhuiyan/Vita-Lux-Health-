@@ -6,31 +6,29 @@ import Icon1 from '@/assets/Stats/icon1.png';
 import Icon2 from '@/assets/Stats/icon2.png';
 import Icon3 from '@/assets/Stats/icon3.png';
 import Image from 'next/image';
+import { BookButton } from '@/components/booking/book-button';
 
-export function ServiceDetailsHero() {
+export function ServiceDetailsHero({
+  serviceDetails,
+  isLoading,
+}: {
+  serviceDetails: any;
+  isLoading: boolean;
+}) {
+  if (isLoading || !serviceDetails) {
+    return <div className="py-20 text-center">Loading</div>;
+  }
   return (
     <section className="relative min-h-screen flex flex-col justify-center overflow-hidden">
       {/* Background Image */}
       <div
-        className="absolute inset-0 bg-cover bg-center bg-no-repeat"
+        className="absolute inset-0 bg-cover object-contain bg-center bg-no-repeat"
         style={{
-          backgroundImage: `url(${Herobg.src})`,
+          backgroundImage: `url(http://103.186.20.110:9999/storage/${serviceDetails?.media_library?.file_path})`,
         }}
       />
-
-      {/* Background video */}
-      {/* <video
-        className="absolute inset-0 w-full h-full object-cover"
-        src="/heroVedio.mp4" // your video file
-        autoPlay
-        muted
-        loop
-        playsInline
-      /> */}
-
       {/* Dark overlay with gradient */}
       <div className="absolute inset-0 bg-gradient-to-r from-black/50 via-black/40 to-transparent" />
-
       {/* Subtle grain texture */}
       <div
         className="absolute inset-0 opacity-30"
@@ -40,11 +38,9 @@ export function ServiceDetailsHero() {
           }
         }
       />
-
       {/* Decorative gold lines */}
       {/* <div className="absolute left-0 top-0 bottom-0 w-px bg-gradient-to-b from-transparent via-gold-500/30 to-transparent ml-[8vw] hidden lg:block" />
       <div className="absolute right-0 top-0 bottom-0 w-px bg-gradient-to-b from-transparent via-gold-500/20 to-transparent mr-[8vw] hidden lg:block" /> */}
-
       {/* Content */}
       <div className="relative flex justify-between z-10 pt-32 pb-24">
         <div className="max-w-5xl p-12  ">
@@ -55,7 +51,7 @@ export function ServiceDetailsHero() {
           >
             <div className="w-12 h-px bg-gold-500" />
             <span className="font-sans text-[10px] tracking-[0.3em] uppercase text-white font-medium">
-              MENTAL WELLNESS CARE
+              {serviceDetails?.category?.name || 'Mental Health'}
             </span>
           </div>
 
@@ -64,9 +60,9 @@ export function ServiceDetailsHero() {
             className="font- text-cream-50 leading-[1.05] text-display-xl lg:text-[72px] font-bold mb-8 animate-fade-up"
             style={{ animationDelay: '0.2s' }}
           >
-            Personalized Support for
+            {serviceDetails?.service_name}
             <br />
-            <em className="not-italic font-bold text-gold-400"> Depression & Anxiety</em>
+            {/* <em className="not-italic font-bold text-gold-400"> Depression & Anxiety</em> */}
           </h1>
 
           {/* CTAs */}
@@ -74,23 +70,9 @@ export function ServiceDetailsHero() {
             className="flex flex-col sm:flex-row items-start sm:items-center gap-4 animate-fade-up"
             style={{ animationDelay: '0.5s' }}
           >
-            {/* <Link href="/booking">
-              <Button
-                size="lg"
-                className="bg-gold-500 hover:bg-gold-600 text-stone-900 shadow-gold-lg font-medium"
-              >
-                Our Services
-              </Button>
-            </Link> */}
-            <Link href="/services">
-              <Button
-                variant="ghost"
-                size="lg"
-                className="text-black hover:text-cream-50 hover:bg-white/10 bg-white shadow-luxury-lg font-medium"
-              >
-                Book Consultation
-              </Button>
-            </Link>
+            <BookButton className="rounded-md bg-white text-black hover:bg-stone-800">
+              Book Now
+            </BookButton>
           </div>
 
           {/* Subheading */}
@@ -98,7 +80,7 @@ export function ServiceDetailsHero() {
             className="font-sans font-light mt-10 text-cream-100/70 text-lg leading-relaxed max-w-xl mb-12 animate-fade-up"
             style={{ animationDelay: '0.35s' }}
           >
-            At AURUM STAR, wellness is more than a treatment — it&nbsp;s a personalized journey
+            {serviceDetails?.service_details.slice(0, 200)}
           </p>
 
           {/* Stats bar */}
@@ -146,7 +128,6 @@ export function ServiceDetailsHero() {
           </div>
         </div> */}
       </div>
-
       {/* Scroll indicator */}
       <div className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 text-cream-100/40 animate-float">
         <span className="font-sans text-[9px] tracking-[0.25em] uppercase">Scroll</span>

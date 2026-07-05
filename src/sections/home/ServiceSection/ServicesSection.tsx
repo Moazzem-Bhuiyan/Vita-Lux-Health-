@@ -1,72 +1,51 @@
 'use client';
 
-import { useRef, useState, useEffect, useCallback } from 'react';
+import { useRef, useState, useEffect, useCallback, useMemo } from 'react';
 import { motion, useInView, AnimatePresence } from 'framer-motion';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
-
-interface ServiceCard {
-  id: number;
-  title: string;
-  image: string;
-  alt: string;
-}
-
-const services: ServiceCard[] = [
-  {
-    id: 1,
-    title: 'Red Light Therapy',
-    image: 'https://images.unsplash.com/photo-1616394584738-fc6e612e71b9?w=500&q=80',
-    alt: 'Red Light Therapy',
-  },
-  {
-    id: 2,
-    title: 'Anti Aging',
-    image: 'https://images.unsplash.com/photo-1556228720-195a672e8a03?w=500&q=80',
-    alt: 'Anti Aging',
-  },
-  {
-    id: 3,
-    title: 'Weight Loss',
-    image: 'https://images.unsplash.com/photo-1549060279-7e168fcee0c2?w=500&q=80',
-    alt: 'Weight Loss',
-  },
-  {
-    id: 4,
-    title: 'Hormone Optimization',
-    image: 'https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=500&q=80',
-    alt: 'Hormone Optimization',
-  },
-  {
-    id: 5,
-    title: 'Hyperbaric Therapy',
-    image: 'https://images.unsplash.com/photo-1576091160550-2173dba999ef?w=500&q=80',
-    alt: 'Hyperbaric Therapy',
-  },
-  {
-    id: 6,
-    title: 'Energy Boost',
-    image: 'https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?w=500&q=80',
-    alt: 'Energy Boost',
-  },
-];
+import { useGetServicesQuery } from '@/redux/api/serviceApi';
 
 export default function ServicesSection() {
   const sectionRef = useRef<HTMLElement>(null);
   const isInView = useInView(sectionRef, { once: true, margin: '-100px' });
+
   const [currentIndex, setCurrentIndex] = useState(0);
+  const [activeCategory, setActiveCategory] = useState<string>('All');
   const [isDragging, setIsDragging] = useState(false);
   const [dragStartX, setDragStartX] = useState(0);
   const [dragOffset, setDragOffset] = useState(0);
-  const autoPlayRef = useRef<NodeJS.Timeout | null>(null);
-  const trackRef = useRef<HTMLDivElement>(null);
+
   const router = useRouter();
 
-  const visibleCount = 3;
-  const totalSlides = services.length;
+  // Fetch services
+  const { data: servicesData, isLoading, isError } = useGetServicesQuery({});
 
-  const clampedIndex = (idx: number) => ((idx % totalSlides) + totalSlides) % totalSlides;
+  const allServices = servicesData?.data?.data || [];
+
+  // Extract unique categories
+  const categories = useMemo(() => {
+    const cats = new Set(['All']);
+    allServices.forEach((service: any) => {
+      if (service.category?.name) cats.add(service.category.name);
+    });
+    return Array.from(cats);
+  }, [allServices]);
+
+  // Filter services by category
+  const filteredServices = useMemo(() => {
+    if (activeCategory === 'All') return allServices;
+    return allServices.filter((service: any) => service.category?.name === activeCategory);
+  }, [allServices, activeCategory]);
+
+  const visibleCount = 3;
+  const totalSlides = filteredServices.length;
+
+  const clampedIndex = (idx: number) => {
+    if (totalSlides === 0) return 0;
+    return ((idx % totalSlides) + totalSlides) % totalSlides;
+  };
 
   const goNext = useCallback(() => {
     setCurrentIndex((prev) => clampedIndex(prev + 1));
@@ -76,9 +55,14 @@ export default function ServicesSection() {
     setCurrentIndex((prev) => clampedIndex(prev - 1));
   }, [totalSlides]);
 
+  // Auto-play
+  const autoPlayRef = useRef<NodeJS.Timeout | null>(null);
+
   const startAutoPlay = useCallback(() => {
-    autoPlayRef.current = setInterval(goNext, 4000);
-  }, [goNext]);
+    if (totalSlides > visibleCount) {
+      autoPlayRef.current = setInterval(goNext, 4000);
+    }
+  }, [goNext, totalSlides]);
 
   const stopAutoPlay = useCallback(() => {
     if (autoPlayRef.current) {
@@ -90,14 +74,22 @@ export default function ServicesSection() {
   useEffect(() => {
     startAutoPlay();
     return stopAutoPlay;
-  }, [startAutoPlay, stopAutoPlay]);
+  }, [startAutoPlay, stopAutoPlay, activeCategory]); // Restart when category changes
 
-  // Build visible items (3 at a time, looping)
-  const visibleItems = Array.from(
-    { length: visibleCount },
-    (_, i) => services[clampedIndex(currentIndex + i)]
-  );
+  // Visible items (infinite loop)
+  const visibleItems = useMemo(() => {
+    if (totalSlides === 0) return [];
+    return Array.from(
+      { length: visibleCount },
+      (_, i) => filteredServices[clampedIndex(currentIndex + i)]
+    );
+  }, [filteredServices, currentIndex, totalSlides]);
 
+  const handleServiceClick = (service: any) => {
+    router.push(`/service/serviceDetails?slug=${service.slug}`);
+  };
+
+  // Drag Handlers
   const handleMouseDown = (e: React.MouseEvent) => {
     setIsDragging(true);
     setDragStartX(e.clientX);
@@ -111,8 +103,8 @@ export default function ServicesSection() {
 
   const handleMouseUp = () => {
     if (isDragging) {
-      if (dragOffset < -50) goNext();
-      else if (dragOffset > 50) goPrev();
+      if (dragOffset < -60) goNext();
+      else if (dragOffset > 60) goPrev();
       setIsDragging(false);
       setDragOffset(0);
       startAutoPlay();
@@ -126,29 +118,36 @@ export default function ServicesSection() {
 
   const handleTouchEnd = (e: React.TouchEvent) => {
     const diff = e.changedTouches[0].clientX - dragStartX;
-    if (diff < -50) goNext();
-    else if (diff > 50) goPrev();
+    if (diff < -60) goNext();
+    else if (diff > 60) goPrev();
     startAutoPlay();
   };
 
+  if (isLoading) {
+    return (
+      <section className="bg-[#1a1008] py-20 text-white text-center">Loading services...</section>
+    );
+  }
+
+  if (isError || allServices.length === 0) {
+    return (
+      <section className="bg-[#1a1008] py-20 text-white text-center">
+        Failed to load services
+      </section>
+    );
+  }
+
   return (
-    <section
-      ref={sectionRef}
-      className="bg-[#1a1008] py-20 md:py-28 overflow-hidden"
-      onMouseLeave={() => {
-        if (isDragging) handleMouseUp();
-      }}
-      id="services"
-    >
+    <section ref={sectionRef} className="bg-[#1a1008] py-20 md:py-28 overflow-hidden" id="services">
       <div className="max-w-[1440px] mx-auto px-6 md:px-12">
-        {/* Header Row */}
-        <div className="flex items-start justify-between mb-14">
+        {/* Header */}
+        <div className="flex flex-col md:flex-row md:items-end justify-between mb-12 gap-6">
           <div>
             <motion.div
               initial={{ opacity: 0, x: -40 }}
               whileInView={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.6 }}
               className="flex items-center gap-4 mb-4"
+              transition={{ duration: 0.6 }}
             >
               <span className="text-[11px] tracking-[0.2em] text-[#c9a96e] uppercase font-medium">
                 Thoughtfully Crafted Treatments
@@ -159,132 +158,100 @@ export default function ServicesSection() {
             <motion.h2
               initial={{ opacity: 0, x: 40 }}
               whileInView={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.7 }}
               className="text-4xl md:text-5xl lg:text-[75px] text-white font-bold leading-[1.05]"
+              transition={{ duration: 0.6 }}
             >
               Curated Wellness
-              <br />
-              Experiences
+              <br /> Experiences
             </motion.h2>
           </div>
+        </div>
 
-          {/* Navigation Arrows */}
-          <motion.div
-            initial={{ opacity: 0, x: 20 }}
-            animate={isInView ? { opacity: 1, x: 0 } : {}}
-            transition={{ duration: 0.6, delay: 0.2 }}
-            className="hidden md:flex items-center gap-3 mt-2"
-          >
+        {/* Category Tabs */}
+        <div className="flex flex-wrap gap-3 mb-10">
+          {categories.map((category) => (
             <button
+              key={category}
               onClick={() => {
-                goPrev();
-                stopAutoPlay();
-                startAutoPlay();
+                setActiveCategory(category);
+                setCurrentIndex(0);
               }}
-              className="w-14 h-14 rounded-full border border-white/20 flex items-center justify-center text-white hover:bg-white/10 hover:border-white/40 transition-all duration-300 group"
-              aria-label="Previous"
+              className={`px-6 py-2.5 text-sm rounded-full transition-all ${
+                activeCategory === category
+                  ? 'bg-[#c9a96e] text-[#1a1008] font-medium'
+                  : 'bg-white/5 text-white/70 hover:bg-white/10 border border-white/10'
+              }`}
             >
-              <ChevronLeft
-                size={20}
-                className="group-hover:-translate-x-0.5 transition-transform"
-              />
+              {category}
             </button>
-            <button
-              onClick={() => {
-                goNext();
-                stopAutoPlay();
-                startAutoPlay();
-              }}
-              className="w-14 h-14 rounded-full border border-white/20 flex items-center justify-center text-white hover:bg-white/10 hover:border-white/40 transition-all duration-300 group"
-              aria-label="Next"
-            >
-              <ChevronRight
-                size={20}
-                className="group-hover:translate-x-0.5 transition-transform"
-              />
-            </button>
-          </motion.div>
+          ))}
         </div>
 
         {/* Carousel */}
         <div
-          ref={trackRef}
           className="cursor-grab active:cursor-grabbing select-none"
           onMouseDown={handleMouseDown}
           onMouseMove={handleMouseMove}
           onMouseUp={handleMouseUp}
+          onMouseLeave={handleMouseUp}
           onTouchStart={handleTouchStart}
           onTouchEnd={handleTouchEnd}
           onMouseEnter={stopAutoPlay}
-          onMouseLeave={startAutoPlay}
         >
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             <AnimatePresence mode="popLayout">
               {visibleItems.map((service, i) => (
                 <motion.div
                   key={`${service.id}-${currentIndex}`}
-                  initial={{ opacity: 0, scale: 0.95, y: 20 }}
-                  animate={{ opacity: 1, scale: 1, y: 0 }}
-                  exit={{ opacity: 0, scale: 0.95, y: -20 }}
-                  transition={{
-                    duration: 0.5,
-                    delay: i * 0.08,
-                    ease: [0.25, 0.46, 0.45, 0.94],
-                  }}
-                  className="group relative"
-                  onClick={() => router.push(`/service/serviceDetails`)}
+                  initial={{ opacity: 0, y: 30, scale: 0.95 }}
+                  animate={{ opacity: 1, y: 0, scale: 1 }}
+                  exit={{ opacity: 0, y: -30, scale: 0.95 }}
+                  transition={{ duration: 0.5, delay: i * 0.07 }}
+                  className="group relative cursor-pointer"
+                  onClick={() => handleServiceClick(service)}
+                  onContextMenu={(e) => e.preventDefault()}
+                  viewport={{ once: true, amount: 0.2 }}
                 >
-                  <div className="relative overflow-hidden rounded-[8px] aspect-[3/4] w-[439px] h-[479px]">
+                  <div className="relative overflow-hidden rounded-2xl aspect-[4/4.8] shadow-xl">
                     <Image
-                      src={service.image}
-                      width={2000}
-                      height={2000}
-                      alt={service.alt}
-                      className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
-                      draggable={false}
+                      src={
+                        service.media_library?.file_path
+                          ? `http://103.186.20.110:9999/storage/${service.media_library.file_path}`
+                          : '/placeholder-service.jpg'
+                      }
+                      width={800}
+                      height={900}
+                      alt={service.service_name}
+                      className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
                     />
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent" />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/30 to-transparent" />
                   </div>
-                  <motion.p
-                    className="mt-4 text-center text-white text-[35px]  tracking-wide"
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    transition={{ delay: 0.3 + i * 0.08 }}
-                  >
-                    {service.title}
-                  </motion.p>
+
+                  <div className="mt-5 text-center">
+                    <h3 className="text-white text-2xl md:text-3xl font-medium tracking-wide font-sans">
+                      {service.service_name}
+                    </h3>
+                    <p className="text-[#c9a96e] mt-2 text-sm">
+                      ${parseFloat(service.price).toFixed(0)} • {service.duration} min
+                    </p>
+                  </div>
                 </motion.div>
               ))}
             </AnimatePresence>
           </div>
         </div>
 
-        {/* Mobile Nav */}
-        <div className="flex md:hidden items-center justify-center gap-4 mt-10">
-          <button
-            onClick={goPrev}
-            className="w-12 h-12 rounded-full border border-white/20 flex items-center justify-center text-white hover:bg-white/10 transition-all"
-          >
-            <ChevronLeft size={18} />
-          </button>
-          <div className="flex gap-2">
-            {services.map((_, i) => (
-              <button
-                key={i}
-                onClick={() => setCurrentIndex(i)}
-                className={`w-1.5 h-1.5 rounded-full transition-all ${
-                  i === currentIndex ? 'bg-[#c9a96e] w-4' : 'bg-white/30'
-                }`}
-              />
-            ))}
+        {/* Navigation */}
+        {totalSlides > visibleCount && (
+          <div className="flex items-center justify-center gap-6 mt-12">
+            <button onClick={goPrev} className="nav-btn">
+              <ChevronLeft size={24} />
+            </button>
+            <button onClick={goNext} className="nav-btn">
+              <ChevronRight size={24} />
+            </button>
           </div>
-          <button
-            onClick={goNext}
-            className="w-12 h-12 rounded-full border border-white/20 flex items-center justify-center text-white hover:bg-white/10 transition-all"
-          >
-            <ChevronRight size={18} />
-          </button>
-        </div>
+        )}
       </div>
     </section>
   );

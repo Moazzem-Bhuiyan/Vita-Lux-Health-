@@ -1,23 +1,28 @@
 'use client';
 
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { ArrowLeft, ArrowRight, ShieldCheck } from 'lucide-react';
 import { motion } from 'motion/react';
 import { AuthCard, AuthButton, OtpInput } from '@/components/shared/AuthPrimitives';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
+import { useVerifyEmailMutation } from '@/redux/api/authApi';
 
 const OTP_LENGTH = 6;
 const RESEND_SECONDS = 60;
 
-export default function OtpVerificationForm({ email = 'you@luxespa.com' }: { email?: string }) {
+export default function OtpVerificationForm({ email: propEmail = '' }: { email?: string }) {
   const [otp, setOtp] = useState<string[]>(Array(OTP_LENGTH).fill(''));
-  const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState(false);
   const [countdown, setCountdown] = useState(RESEND_SECONDS);
   const [canResend, setCanResend] = useState(false);
+
   const router = useRouter();
+  const params = useSearchParams();
+
+  // Get email from URL params or props
+  const email = params.get('email') || propEmail;
 
   // Countdown timer
   useEffect(() => {
@@ -25,11 +30,14 @@ export default function OtpVerificationForm({ email = 'you@luxespa.com' }: { ema
       setCanResend(true);
       return;
     }
-    const t = setTimeout(() => setCountdown((c) => c - 1), 1000);
-    return () => clearTimeout(t);
+    const timer = setTimeout(() => setCountdown((c) => c - 1), 1000);
+    return () => clearTimeout(timer);
   }, [countdown]);
 
+  const [verifyOtp, { isLoading: isVerifying }] = useVerifyEmailMutation();
+
   const handleResend = () => {
+    // TODO: Call resend OTP API here later
     setCountdown(RESEND_SECONDS);
     setCanResend(false);
     setOtp(Array(OTP_LENGTH).fill(''));
@@ -38,26 +46,46 @@ export default function OtpVerificationForm({ email = 'you@luxespa.com' }: { ema
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+
     const code = otp.join('');
+
     if (code.length < OTP_LENGTH) {
       setError('Please enter all 6 digits');
       return;
     }
-    setError('');
-    setLoading(true);
-    await new Promise((r) => setTimeout(r, 1500));
-    setLoading(false);
 
-    // Simulate wrong OTP
-    if (code === '000000') {
-      setError('Invalid code. Please try again.');
-      setOtp(Array(OTP_LENGTH).fill(''));
+    if (!email) {
+      setError('Email not found. Please go back and try again.');
       return;
     }
-    setSuccess(true);
-    router.push('/resetPassword');
+
+    setError('');
+
+    try {
+      const payload = {
+        email: email,
+        otp: code,
+      };
+
+      console.log('Sending OTP payload:', payload); // For debugging
+
+      const result = await verifyOtp(payload).unwrap();
+
+      console.log('OTP Verification Success:', result);
+      setSuccess(true);
+
+      // Optional: Redirect after success
+      setTimeout(() => {
+        router.push('/login');
+      }, 1500);
+    } catch (err: any) {
+      console.error('OTP Verification Failed:', err);
+      setError(err?.data?.message || 'Invalid OTP. Please try again.');
+      setOtp(Array(OTP_LENGTH).fill('')); // Clear OTP on error
+    }
   };
 
+  // Success Screen
   if (success) {
     return (
       <AuthCard>
@@ -90,7 +118,7 @@ export default function OtpVerificationForm({ email = 'you@luxespa.com' }: { ema
 
   return (
     <AuthCard>
-      {/* Back */}
+      {/* Back Button */}
       <Link
         href="/auth/forgot-password"
         className="flex items-center gap-2 text-white/35 text-xs hover:text-white/65 transition-colors mb-8"
@@ -99,7 +127,6 @@ export default function OtpVerificationForm({ email = 'you@luxespa.com' }: { ema
       </Link>
 
       <div className="text-center mb-8">
-        {/* Shield icon */}
         <motion.div
           initial={{ scale: 0.7, opacity: 0 }}
           animate={{ scale: 1, opacity: 1 }}
@@ -110,7 +137,7 @@ export default function OtpVerificationForm({ email = 'you@luxespa.com' }: { ema
         </motion.div>
         <h2 className="text-white font-serif text-4xl font-bold mb-2">Verify OTP</h2>
         <p className="text-white/40 text-sm">We sent a 6-digit code to</p>
-        <p className="text-[#c9a96e] text-sm font-medium mt-1">{email}</p>
+        <p className="text-[#c9a96e] text-sm font-medium mt-1 break-all">{email || 'your email'}</p>
       </div>
 
       <form onSubmit={handleSubmit} className="flex flex-col gap-6">
@@ -126,12 +153,12 @@ export default function OtpVerificationForm({ email = 'you@luxespa.com' }: { ema
           </motion.p>
         )}
 
-        <AuthButton loading={loading} type="submit">
+        <AuthButton loading={isVerifying} type="submit">
           Verify Code <ArrowRight size={15} />
         </AuthButton>
       </form>
 
-      {/* Resend */}
+      {/* Resend OTP */}
       <p className="text-center text-white/30 text-xs mt-7">
         Didn&apos;t receive the code?{' '}
         {canResend ? (

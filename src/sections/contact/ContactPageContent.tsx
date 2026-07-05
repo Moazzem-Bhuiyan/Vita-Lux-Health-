@@ -1,33 +1,33 @@
-"use client";
+'use client';
 
-import { useState } from "react";
-import { Phone, Mail, MapPin, Clock, Send, CheckCircle } from "lucide-react";
-import { LOCATIONS } from "@/lib/data/misc";
-import { SectionHeader } from "@/components/ui/SectionHeader";
-import { Input } from "@/components/ui/Input";
-import { Textarea } from "@/components/ui/Textarea";
-import { Button } from "@/components/ui/Button";
-import type { ContactFormData } from "@/types";
+import { useState } from 'react';
+import { Phone, Mail, MapPin, Clock, Send, CheckCircle } from 'lucide-react';
+import { LOCATIONS } from '@/lib/data/misc';
+import { SectionHeader } from '@/components/ui/SectionHeader';
+import { Input } from '@/components/ui/Input';
+import { Textarea } from '@/components/ui/Textarea';
+import type { ContactFormData } from '@/types';
+import { Button } from '@/components/ui';
 
 const SUBJECTS = [
-  "Booking Inquiry",
-  "Service Information",
-  "Membership",
-  "Gift Cards",
-  "Corporate Wellness",
-  "Press & Media",
-  "General Inquiry",
+  'Booking Inquiry',
+  'Service Information',
+  'Membership',
+  'Gift Cards',
+  'Corporate Wellness',
+  'Press & Media',
+  'General Inquiry',
 ];
 
 export function ContactPageContent() {
   const [submitted, setSubmitted] = useState(false);
   const [activeLocation, setActiveLocation] = useState(LOCATIONS[0].id);
   const [form, setForm] = useState<ContactFormData>({
-    name: "",
-    email: "",
-    phone: "",
-    subject: "",
-    message: "",
+    name: '',
+    email: '',
+    phone: '',
+    subject: '',
+    message: '',
     locationId: LOCATIONS[0].id,
   });
 
@@ -51,7 +51,9 @@ export function ContactPageContent() {
       <div className="bg-stone-900 pt-40 pb-20 text-center relative overflow-hidden">
         <div
           className="absolute inset-0 opacity-10 bg-cover bg-center"
-          style={{ backgroundImage: `url('https://images.unsplash.com/photo-1545205597-3d9d02c29597?w=1600&q=80')` }}
+          style={{
+            backgroundImage: `url('https://images.unsplash.com/photo-1545205597-3d9d02c29597?w=1600&q=80')`,
+          }}
         />
         <div className="container-luxury relative">
           <SectionHeader
@@ -74,11 +76,11 @@ export function ContactPageContent() {
                 onClick={() => setActiveLocation(loc.id)}
                 className={`px-6 py-4 font-sans text-[10px] tracking-[0.2em] uppercase transition-all duration-200 border-b-2 ${
                   activeLocation === loc.id
-                    ? "border-gold-500 text-gold-400"
-                    : "border-transparent text-stone-500 hover:text-stone-300"
+                    ? 'border-gold-500 text-gold-400'
+                    : 'border-transparent text-stone-500 hover:text-stone-300'
                 }`}
               >
-                {loc.name.replace("Aurum Star ", "")}
+                {loc.name.replace('Aurum Star ', '')}
               </button>
             ))}
           </div>
@@ -90,25 +92,29 @@ export function ContactPageContent() {
           <div className="container-luxury lg:max-w-none lg:pl-[8vw] lg:pr-16 py-16 space-y-8">
             <div>
               <p className="eyebrow text-gold-500 mb-2">{currentLocation.name}</p>
-              <h2 className="font-serif text-3xl text-cream-50 font-light">{currentLocation.city}</h2>
+              <h2 className="font-serif text-3xl text-cream-50 font-light">
+                {currentLocation.city}
+              </h2>
             </div>
 
             <div className="space-y-5">
               {[
                 {
                   icon: MapPin,
-                  label: "Address",
+                  label: 'Address',
                   value: `${currentLocation.address}, ${currentLocation.city}`,
                 },
-                { icon: Phone, label: "Phone", value: currentLocation.phone },
-                { icon: Mail, label: "Email", value: currentLocation.email },
+                { icon: Phone, label: 'Phone', value: currentLocation.phone },
+                { icon: Mail, label: 'Email', value: currentLocation.email },
               ].map(({ icon: Icon, label, value }) => (
                 <div key={label} className="flex items-start gap-4">
                   <div className="w-9 h-9 border border-stone-600 flex items-center justify-center flex-shrink-0">
                     <Icon size={13} className="text-gold-500" />
                   </div>
                   <div>
-                    <p className="font-sans text-[10px] tracking-[0.2em] uppercase text-stone-500 mb-0.5">{label}</p>
+                    <p className="font-sans text-[10px] tracking-[0.2em] uppercase text-stone-500 mb-0.5">
+                      {label}
+                    </p>
                     <p className="font-sans text-sm text-stone-300">{value}</p>
                   </div>
                 </div>
@@ -119,7 +125,9 @@ export function ContactPageContent() {
                   <Clock size={13} className="text-gold-500" />
                 </div>
                 <div>
-                  <p className="font-sans text-[10px] tracking-[0.2em] uppercase text-stone-500 mb-1">Hours</p>
+                  <p className="font-sans text-[10px] tracking-[0.2em] uppercase text-stone-500 mb-1">
+                    Hours
+                  </p>
                   <div className="space-y-0.5">
                     <p className="font-sans text-sm text-stone-300">
                       Mon–Fri: {currentLocation.hours.weekdays}
@@ -159,7 +167,10 @@ export function ContactPageContent() {
               </div>
             </div>
             {/* Grid lines */}
-            <svg className="absolute inset-0 w-full h-full opacity-5" xmlns="http://www.w3.org/2000/svg">
+            <svg
+              className="absolute inset-0 w-full h-full opacity-5"
+              xmlns="http://www.w3.org/2000/svg"
+            >
               <defs>
                 <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse">
                   <path d="M 40 0 L 0 0 0 40" fill="none" stroke="#C9A96E" strokeWidth="0.5" />
@@ -181,8 +192,8 @@ export function ContactPageContent() {
                 onClick={() => setActiveLocation(loc.id)}
                 className={`text-left p-5 border transition-all duration-300 ${
                   activeLocation === loc.id
-                    ? "border-gold-500/40 bg-white shadow-luxury"
-                    : "border-stone-200 bg-white/50 hover:border-stone-300 hover:bg-white"
+                    ? 'border-gold-500/40 bg-white shadow-luxury'
+                    : 'border-stone-200 bg-white/50 hover:border-stone-300 hover:bg-white'
                 }`}
               >
                 <div className="flex items-start justify-between mb-2">
@@ -193,7 +204,9 @@ export function ContactPageContent() {
                 </div>
                 <p className="font-sans text-xs text-stone-400">{loc.address}</p>
                 <p className="font-sans text-xs text-stone-400">{loc.city}</p>
-                <p className="font-sans text-[10px] text-gold-600 mt-2 tracking-wide">{loc.phone}</p>
+                <p className="font-sans text-[10px] text-gold-600 mt-2 tracking-wide">
+                  {loc.phone}
+                </p>
               </button>
             ))}
           </div>
@@ -206,28 +219,26 @@ export function ContactPageContent() {
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-16 items-start">
             {/* Left info */}
             <div className="lg:col-span-4 space-y-8">
-              <SectionHeader
-                eyebrow="Get in Touch"
-                heading="Send Us a Message"
-                align="left"
-              />
+              <SectionHeader eyebrow="Get in Touch" heading="Send Us a Message" align="left" />
               <p className="font-sans text-stone-500 font-light leading-relaxed text-sm">
-                Whether you have a question about our services, want to plan a special event, 
-                or simply want to say hello — we would love to hear from you. Our team typically 
+                Whether you have a question about our services, want to plan a special event, or
+                simply want to say hello — we would love to hear from you. Our team typically
                 responds within two business hours.
               </p>
 
               <div className="space-y-4 pt-4">
                 {[
-                  { icon: Phone, label: "Call Us", value: "+1 (212) 555-0192" },
-                  { icon: Mail, label: "Email", value: "hello@vitaluxhealth.com" },
+                  { icon: Phone, label: 'Call Us', value: '+1 (212) 555-0192' },
+                  { icon: Mail, label: 'Email', value: 'hello@vitaluxhealth.com' },
                 ].map(({ icon: Icon, label, value }) => (
                   <div key={label} className="flex items-center gap-4">
                     <div className="w-10 h-10 bg-stone-900 flex items-center justify-center flex-shrink-0">
                       <Icon size={14} className="text-gold-500" />
                     </div>
                     <div>
-                      <p className="font-sans text-[10px] tracking-widest uppercase text-stone-400">{label}</p>
+                      <p className="font-sans text-[10px] tracking-widest uppercase text-stone-400">
+                        {label}
+                      </p>
                       <p className="font-sans text-sm text-stone-700">{value}</p>
                     </div>
                   </div>
@@ -244,8 +255,8 @@ export function ContactPageContent() {
                   </div>
                   <h3 className="font-serif text-2xl text-stone-900">Message Received</h3>
                   <p className="font-sans text-stone-500 font-light max-w-md mx-auto">
-                    Thank you for reaching out. A member of our concierge team will be in 
-                    touch within two business hours.
+                    Thank you for reaching out. A member of our concierge team will be in touch
+                    within two business hours.
                   </p>
                   <button
                     onClick={() => setSubmitted(false)}
@@ -255,7 +266,10 @@ export function ContactPageContent() {
                   </button>
                 </div>
               ) : (
-                <form onSubmit={handleSubmit} className="space-y-6 border border-stone-200 bg-white p-10">
+                <form
+                  onSubmit={handleSubmit}
+                  className="space-y-6 border border-stone-200 bg-white p-10"
+                >
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
                     <Input
                       label="Full Name"
@@ -298,7 +312,9 @@ export function ContactPageContent() {
                       >
                         <option value="">Select a subject</option>
                         {SUBJECTS.map((s) => (
-                          <option key={s} value={s}>{s}</option>
+                          <option key={s} value={s}>
+                            {s}
+                          </option>
                         ))}
                       </select>
                     </div>
@@ -315,7 +331,9 @@ export function ContactPageContent() {
                       className="w-full bg-white border border-stone-200 px-4 py-3 font-sans text-sm text-stone-800 focus:outline-none focus:border-gold-500 focus:ring-1 focus:ring-gold-500/30 transition-all duration-200 appearance-none cursor-pointer"
                     >
                       {LOCATIONS.map((loc) => (
-                        <option key={loc.id} value={loc.id}>{loc.name}</option>
+                        <option key={loc.id} value={loc.id}>
+                          {loc.name}
+                        </option>
                       ))}
                     </select>
                   </div>

@@ -1,9 +1,10 @@
-"use client";
+'use client';
 
-import Link from "next/link";
-import { Calendar, User, Scissors, ArrowRight } from "lucide-react";
-import { Button } from "@/components/ui/Button";
-import { SERVICE_CATEGORIES } from "@/lib/data/services";
+import Link from 'next/link';
+import { Calendar, User, Scissors, ArrowRight } from 'lucide-react';
+
+import { SERVICE_CATEGORIES } from '@/lib/data/services';
+import { Button } from '@/components/ui';
 
 export function BookingWidget() {
   return (
@@ -23,8 +24,8 @@ export function BookingWidget() {
               <em className="not-italic text-gold-400">Transformation</em>
             </h2>
             <p className="font-sans text-sm text-stone-400 font-light leading-relaxed">
-              Select your preferred treatment, date, and therapist. Our concierge 
-              team is also available to assist you personally.
+              Select your preferred treatment, date, and therapist. Our concierge team is also
+              available to assist you personally.
             </p>
           </div>
 
@@ -57,7 +58,7 @@ export function BookingWidget() {
                   <input
                     type="date"
                     className="w-full bg-stone-900 border border-stone-700 text-cream-100 font-sans text-sm py-3 px-3 focus:outline-none focus:border-gold-500 transition-colors cursor-pointer"
-                    min={new Date().toISOString().split("T")[0]}
+                    min={new Date().toISOString().split('T')[0]}
                   />
                 </div>
 
@@ -81,7 +82,6 @@ export function BookingWidget() {
                 <Link href="/booking" className="w-full sm:w-auto">
                   <Button
                     size="lg"
-                    fullWidth
                     className="bg-gold-500 hover:bg-gold-600 text-stone-900 font-medium shadow-gold"
                   >
                     Check Availability
@@ -89,7 +89,7 @@ export function BookingWidget() {
                   </Button>
                 </Link>
                 <p className="font-sans text-xs text-stone-500 text-center">
-                  Or call{" "}
+                  Or call{' '}
                   <a
                     href="tel:+12125550192"
                     className="text-gold-500 hover:text-gold-400 transition-colors"

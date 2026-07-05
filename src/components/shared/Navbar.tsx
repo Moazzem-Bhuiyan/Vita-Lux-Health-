@@ -2,13 +2,17 @@
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { usePathname } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 import { Menu, X, Phone, User } from 'lucide-react';
 import { cn } from '@/lib/utils';
-import { Button } from '@/components/ui/Button';
+
 import Logo from '@/assets/Logo/Logo.png';
 import TextLogo from '@/assets/Logo/Logotext.png';
 import Image from 'next/image';
+import { selectUser } from '@/redux/features/authSlice';
+import { useSelector } from 'react-redux';
+import { Button } from '../ui';
+import { BookButton } from '../booking/book-button';
 
 const NAV_LINKS = [
   { label: 'Home', href: '/' },
@@ -23,7 +27,11 @@ export function Navbar() {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileOpen, setIsMobileOpen] = useState(false);
   const pathname = usePathname();
-
+  const user = useSelector(selectUser);
+  const router = useRouter();
+  function initials(first?: string, last?: string): string {
+    return `${first?.[0] ?? ''}${last?.[0] ?? ''}`.toUpperCase();
+  }
   useEffect(() => {
     const handleScroll = () => setIsScrolled(window.scrollY > 40);
     window.addEventListener('scroll', handleScroll, { passive: true });
@@ -83,40 +91,52 @@ export function Navbar() {
           <div className="flex-1 justify-end flex">
             {/* CTA & Phone */}
             <div className="hidden md:flex items-center gap-4">
-              <a
-                href="/login"
-                className={cn(
-                  'flex items-center gap-1.5 font-sans text-[11px] tracking-wide transition-colors duration-300',
-                  isTransparent
-                    ? 'text-cream-200/70 hover:text-cream-50'
-                    : 'text-stone-500 hover:text-stone-800'
-                )}
-              >
-                <User size={14} />
-                <Button
-                  size="sm"
+              {user?.email ? (
+                <span
                   className={cn(
-                    'flex items-center gap-1.5 font-sans text-[11px] tracking-wide transition-colors duration-300 bg-transparent',
-                    isTransparent
-                      ? 'text-cream-200/70 hover:text-cream-50'
-                      : 'text-stone-500 hover:text-stone-800'
+                    'font-sans text-[11px] tracking-wide',
+                    isTransparent ? 'text-cream-200/70' : 'text-stone-500'
                   )}
+                  onClick={() => router.push('/profile')}
                 >
-                  Login
-                </Button>
-              </a>
-              <Link href="/booking">
-                <Button
-                  variant="primary"
-                  size="sm"
-                  className={cn(
-                    isTransparent &&
-                      'bg-white/10 backdrop-blur-sm text-cream-50 border border-white/20 hover:bg-white/20'
-                  )}
-                >
-                  Book Now
-                </Button>
-              </Link>
+                  <div
+                    className="w-10 h-10 md:w-10 md:h-10 rounded-full flex items-center justify-center shrink-0 cursor-pointer transition-all duration-300 hover:scale-105"
+                    style={{
+                      background: 'rgba(255,255,255,0.18)',
+                      border: `1px solid ${isTransparent ? 'rgba(255,255,255,0.3)' : 'rgba(0,0,0,0.1)'}`,
+                    }}
+                  >
+                    <span
+                      className="text-lg md:text-xl"
+                      style={{
+                        color: isTransparent ? '#fff' : '#000',
+                        fontFamily: "'Playfair Display', serif",
+                      }}
+                    >
+                      {initials(user?.first_name, user?.last_name)}
+                    </span>
+                  </div>
+                </span>
+              ) : (
+                <Link href="/login">
+                  <Button
+                    size="sm"
+                    variant="ghost"
+                    className={cn(
+                      isTransparent
+                        ? 'text-cream-200/70 hover:text-cream-50'
+                        : 'text-stone-500 hover:text-stone-800'
+                    )}
+                  >
+                    <User className="mr-1 h-4 w-4" />
+                    Login
+                  </Button>
+                </Link>
+              )}
+
+              <>
+                <BookButton>Book Now</BookButton>
+              </>
             </div>
 
             {/* Mobile Toggle */}

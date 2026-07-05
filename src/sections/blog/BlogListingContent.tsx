@@ -6,7 +6,7 @@ import Link from 'next/link';
 import { Clock, ArrowRight } from 'lucide-react';
 import { BLOG_POSTS } from '@/lib/data/blog';
 import { Badge } from '@/components/ui/Badge';
-import { formatDate, cn } from '@/lib/utils';
+import { cn } from '@/lib/utils';
 import type { BlogCategory } from '@/types';
 import { BlogHero } from './BlogHero';
 
@@ -163,7 +163,7 @@ export function BlogListingContent() {
                         <p className="font-sans text-[10px] text-stone-500">{post.author.name}</p>
                       </div>
                       <span className="font-sans text-[10px] text-stone-400">
-                        {formatDate(post.publishedAt)}
+                        {/* {formatDate(post.publishedAt)} */}
                       </span>
                     </div>
                   </div>

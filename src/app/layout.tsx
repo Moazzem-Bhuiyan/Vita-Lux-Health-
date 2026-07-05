@@ -4,6 +4,12 @@ import { Navbar } from '@/components/shared/Navbar';
 import { Chatbot } from '@/components/shared/Chatbot';
 import Footer from '@/components/shared/Footer';
 import NewsletterBanner from '@/sections/home/NewsLetterSection/NewsletterBanner';
+import ReduxProviders from '@/redux/lib/ReduxProvider';
+
+import { cn } from '@/lib/utils';
+import { BookingProvider } from '@/components/booking/booking-context';
+
+// const geist = Geist({ subsets: ['latin'], variable: '--font-sans' });
 
 export const metadata: Metadata = {
   title: {
@@ -55,17 +61,21 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" suppressHydrationWarning>
+    <html lang="en" suppressHydrationWarning className={cn('font-sans')}>
       <head>
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
       </head>
       <body className="min-h-screen flex flex-col">
-        <Navbar />
-        <main className="flex-1">{children}</main>
-        <NewsletterBanner />
-        <Footer />
-        <Chatbot />
+        <ReduxProviders>
+          <BookingProvider>
+            <Navbar />
+            <main className="flex-1">{children}</main>
+            <NewsletterBanner />
+            <Footer />
+            <Chatbot />
+          </BookingProvider>
+        </ReduxProviders>
       </body>
     </html>
   );

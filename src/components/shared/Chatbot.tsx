@@ -1,40 +1,49 @@
-"use client";
+'use client';
 
-import { useState, useRef, useEffect } from "react";
-import { MessageCircle, X, Send, Minus } from "lucide-react";
-import { cn } from "@/lib/utils";
-import type { ChatMessage } from "@/types";
-import { generateId } from "@/lib/utils";
+import { useState, useRef, useEffect } from 'react';
+import { MessageCircle, X, Send, Minus } from 'lucide-react';
+import { cn } from '@/lib/utils';
+import type { ChatMessage } from '@/types';
 
 const QUICK_REPLIES = [
-  "What services do you offer?",
-  "How do I book an appointment?",
-  "What are your hours?",
-  "Tell me about memberships",
+  'What services do you offer?',
+  'How do I book an appointment?',
+  'What are your hours?',
+  'Tell me about memberships',
 ];
 
 const BOT_RESPONSES: Record<string, string> = {
   default:
     "Thank you for reaching out to Aurum Star. I'm here to help you with booking, services, pricing, and any other questions. How may I assist you today?",
   services:
-    "We offer a curated collection of luxury treatments including Swedish Massage, Hot Stone Therapy, Luminous Glow Facial, Anti-Aging Facial, Aromatherapy Healing, and our signature 24K Gold Body Ritual. Would you like to explore any of these?",
-  book:
-    "Booking is simple! You can use our online booking system by clicking 'Book Now', or call us at +1 (212) 555-0192. We recommend booking 48 hours in advance to ensure your preferred therapist and time slot.",
+    'We offer a curated collection of luxury treatments including Swedish Massage, Hot Stone Therapy, Luminous Glow Facial, Anti-Aging Facial, Aromatherapy Healing, and our signature 24K Gold Body Ritual. Would you like to explore any of these?',
+  book: "Booking is simple! You can use our online booking system by clicking 'Book Now', or call us at +1 (212) 555-0192. We recommend booking 48 hours in advance to ensure your preferred therapist and time slot.",
   hours:
-    "Our locations are open Monday–Friday 9am–9pm, Saturday 8am–8pm, and Sunday 10am–7pm. The Hamptons location may have seasonal hours.",
+    'Our locations are open Monday–Friday 9am–9pm, Saturday 8am–8pm, and Sunday 10am–7pm. The Hamptons location may have seasonal hours.',
   membership:
-    "Our membership tiers—Silver, Gold, and Platinum—offer significant savings and exclusive perks including priority booking, complimentary add-ons, and member-only events. Would you like more details on a specific tier?",
+    'Our membership tiers—Silver, Gold, and Platinum—offer significant savings and exclusive perks including priority booking, complimentary add-ons, and member-only events. Would you like more details on a specific tier?',
 };
 
 function getBotResponse(message: string): string {
   const lower = message.toLowerCase();
-  if (lower.includes("service") || lower.includes("treatment") || lower.includes("massage") || lower.includes("facial"))
+  if (
+    lower.includes('service') ||
+    lower.includes('treatment') ||
+    lower.includes('massage') ||
+    lower.includes('facial')
+  )
     return BOT_RESPONSES.services;
-  if (lower.includes("book") || lower.includes("appointment") || lower.includes("schedule"))
+  if (lower.includes('book') || lower.includes('appointment') || lower.includes('schedule'))
     return BOT_RESPONSES.book;
-  if (lower.includes("hour") || lower.includes("open") || lower.includes("time"))
+  if (lower.includes('hour') || lower.includes('open') || lower.includes('time'))
     return BOT_RESPONSES.hours;
-  if (lower.includes("member") || lower.includes("subscription") || lower.includes("silver") || lower.includes("gold") || lower.includes("platinum"))
+  if (
+    lower.includes('member') ||
+    lower.includes('subscription') ||
+    lower.includes('silver') ||
+    lower.includes('gold') ||
+    lower.includes('platinum')
+  )
     return BOT_RESPONSES.membership;
   return BOT_RESPONSES.default;
 }
@@ -42,19 +51,19 @@ function getBotResponse(message: string): string {
 export function Chatbot() {
   const [isOpen, setIsOpen] = useState(false);
   const [isMinimized, setIsMinimized] = useState(false);
-  const [inputValue, setInputValue] = useState("");
+  const [inputValue, setInputValue] = useState('');
   const [messages, setMessages] = useState<ChatMessage[]>([
     {
-      id: "init",
-      role: "assistant",
-      content: "Welcome to Aurum Star. ✨ How may I assist your wellness journey today?",
+      id: 'init',
+      role: 'assistant',
+      content: 'Welcome to Aurum Star. ✨ How may I assist your wellness journey today?',
       timestamp: new Date(),
     },
   ]);
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   const scrollToBottom = () => {
-    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   };
 
   useEffect(() => {
@@ -65,20 +74,20 @@ export function Chatbot() {
     if (!text.trim()) return;
 
     const userMsg: ChatMessage = {
-      id: generateId(),
-      role: "user",
+      id: `${Date.now()}-${Math.random()}`,
+      role: 'user',
       content: text.trim(),
       timestamp: new Date(),
     };
 
     setMessages((prev) => [...prev, userMsg]);
-    setInputValue("");
+    setInputValue('');
 
     // Simulate bot response
     setTimeout(() => {
       const botMsg: ChatMessage = {
-        id: generateId(),
-        role: "assistant",
+        id: `${Date.now()}-${Math.random()}`,
+        role: 'assistant',
         content: getBotResponse(text),
         timestamp: new Date(),
       };
@@ -87,7 +96,7 @@ export function Chatbot() {
   };
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
-    if (e.key === "Enter" && !e.shiftKey) {
+    if (e.key === 'Enter' && !e.shiftKey) {
       e.preventDefault();
       sendMessage(inputValue);
     }
@@ -99,9 +108,9 @@ export function Chatbot() {
       {isOpen && (
         <div
           className={cn(
-            "w-80 md:w-96 bg-cream-50 border border-stone-100 shadow-luxury-lg",
-            "transition-all duration-300 origin-bottom-right",
-            isMinimized ? "h-14 overflow-hidden" : "h-[520px] flex flex-col"
+            'w-80 md:w-96 bg-cream-50 border border-stone-100 shadow-luxury-lg',
+            'transition-all duration-300 origin-bottom-right',
+            isMinimized ? 'h-14 overflow-hidden' : 'h-[520px] flex flex-col'
           )}
         >
           {/* Header */}
@@ -110,14 +119,16 @@ export function Chatbot() {
               <div className="w-2 h-2 rounded-full bg-gold-500 animate-pulse-slow" />
               <div>
                 <p className="font-serif text-cream-50 text-sm">Aurum Star Concierge</p>
-                <p className="font-sans text-[10px] text-stone-400 tracking-wide">Here to assist you</p>
+                <p className="font-sans text-[10px] text-stone-400 tracking-wide">
+                  Here to assist you
+                </p>
               </div>
             </div>
             <div className="flex items-center gap-1">
               <button
                 onClick={() => setIsMinimized((v) => !v)}
                 className="p-1.5 text-stone-400 hover:text-cream-50 transition-colors"
-                aria-label={isMinimized ? "Expand" : "Minimize"}
+                aria-label={isMinimized ? 'Expand' : 'Minimize'}
               >
                 <Minus size={14} />
               </button>
@@ -138,22 +149,19 @@ export function Chatbot() {
                 {messages.map((msg) => (
                   <div
                     key={msg.id}
-                    className={cn(
-                      "flex",
-                      msg.role === "user" ? "justify-end" : "justify-start"
-                    )}
+                    className={cn('flex', msg.role === 'user' ? 'justify-end' : 'justify-start')}
                   >
-                    {msg.role === "assistant" && (
+                    {msg.role === 'assistant' && (
                       <div className="w-7 h-7 bg-stone-900 flex items-center justify-center text-gold-500 mr-2 flex-shrink-0 mt-1">
                         <span className="font-serif text-xs">V</span>
                       </div>
                     )}
                     <div
                       className={cn(
-                        "max-w-[78%] px-4 py-3 text-sm font-sans font-light leading-relaxed",
-                        msg.role === "user"
-                          ? "bg-stone-900 text-cream-50"
-                          : "bg-white border border-stone-100 text-stone-700"
+                        'max-w-[78%] px-4 py-3 text-sm font-sans font-light leading-relaxed',
+                        msg.role === 'user'
+                          ? 'bg-stone-900 text-cream-50'
+                          : 'bg-white border border-stone-100 text-stone-700'
                       )}
                     >
                       {msg.content}
@@ -207,10 +215,10 @@ export function Chatbot() {
           setIsMinimized(false);
         }}
         className={cn(
-          "w-14 h-14 bg-stone-900 text-cream-50 shadow-luxury-lg",
-          "flex items-center justify-center",
-          "hover:bg-stone-800 transition-all duration-300",
-          "relative group"
+          'w-14 h-14 bg-stone-900 text-cream-50 shadow-luxury-lg',
+          'flex items-center justify-center',
+          'hover:bg-stone-800 transition-all duration-300',
+          'relative group'
         )}
         aria-label="Open chat"
       >

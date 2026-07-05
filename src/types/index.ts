@@ -14,7 +14,7 @@ export interface Service {
   featured: boolean;
 }
 
-export type ServiceCategory = "massage" | "facial" | "therapy" | "body" | "wellness";
+export type ServiceCategory = 'massage' | 'facial' | 'therapy' | 'body' | 'wellness';
 
 export interface ServiceCategoryInfo {
   id: ServiceCategory;
@@ -76,12 +76,12 @@ export interface Author {
 }
 
 export type BlogCategory =
-  | "wellness"
-  | "skincare"
-  | "massage"
-  | "nutrition"
-  | "mindfulness"
-  | "lifestyle";
+  | 'wellness'
+  | 'skincare'
+  | 'massage'
+  | 'nutrition'
+  | 'mindfulness'
+  | 'lifestyle';
 
 // ─── Testimonial Types ────────────────────────────────────────────────────────
 export interface Testimonial {
@@ -145,7 +145,7 @@ export interface NavItem {
 // ─── Chat ─────────────────────────────────────────────────────────────────────
 export interface ChatMessage {
   id: string;
-  role: "user" | "assistant";
+  role: 'user' | 'assistant';
   content: string;
   timestamp: Date;
 }

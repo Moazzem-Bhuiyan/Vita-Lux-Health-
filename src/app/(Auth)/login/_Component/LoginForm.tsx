@@ -2,21 +2,24 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
-import { ArrowRight } from 'lucide-react';
-import {
-  AuthCard,
-  AuthHeading,
-  AuthInput,
-  AuthButton,
-  AuthDivider,
-} from '@/components/shared/AuthPrimitives';
+import { ArrowRight, CheckCircle } from 'lucide-react';
+import { motion } from 'motion/react';
+import { AuthCard, AuthHeading, AuthInput, AuthButton } from '@/components/shared/AuthPrimitives';
+import { useSignInMutation } from '@/redux/api/authApi';
+import { useRouter } from 'next/navigation';
+import { useDispatch } from 'react-redux';
+import { setUser } from '@/redux/features/authSlice';
 
 export default function LoginForm() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [remember, setRemember] = useState(false);
-  const [loading, setLoading] = useState(false);
-  const [errors, setErrors] = useState<{ email?: string; password?: string }>({});
+  const [errors, setErrors] = useState<{ email?: string; password?: string; general?: string }>({});
+  const [showSuccess, setShowSuccess] = useState(false);
+  const [userName, setUserName] = useState('');
+
+  const router = useRouter();
+  const [login, { isLoading }] = useSignInMutation();
 
   const validate = () => {
     const e: typeof errors = {};
@@ -26,21 +29,106 @@ export default function LoginForm() {
     else if (password.length < 6) e.password = 'Minimum 6 characters';
     return e;
   };
-
+  const dispatch = useDispatch();
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    const errs = validate();
-    if (Object.keys(errs).length) {
-      setErrors(errs);
+
+    const validationErrors = validate();
+    if (Object.keys(validationErrors).length > 0) {
+      setErrors(validationErrors);
       return;
     }
+
     setErrors({});
-    setLoading(true);
-    await new Promise((r) => setTimeout(r, 1600));
-    setLoading(false);
-    // router.push('/dashboard');
+
+    try {
+      const result = await login({ email, password }).unwrap();
+
+      // Check based on your actual API response
+      if (result?.status === 'success') {
+        const user = result?.data?.user;
+        const token = result?.data?.token;
+
+        if (!user || !token) {
+          throw new Error('Invalid response from server');
+        }
+
+        // Save user name for success modal
+        setUserName(user?.first_name || user?.name || 'User');
+
+        // Save to Redux
+        dispatch(
+          setUser({
+            user,
+            token,
+          })
+        );
+
+        // Optional: localStorage backup
+        localStorage.setItem('token', token);
+        localStorage.setItem('user', JSON.stringify(user));
+
+        // Show success modal
+        setShowSuccess(true);
+
+        // Auto redirect after showing success
+        setTimeout(() => {
+          router.push('/'); // or '/dashboard'
+        }, 1800);
+      } else {
+        setErrors({ general: result?.message || 'Login failed. Please try again.' });
+      }
+    } catch (err: any) {
+      console.error('Login Failed:', err);
+
+      const errorMessage =
+        err?.data?.message || err?.message || 'Invalid email or password. Please try again.';
+
+      setErrors({ general: errorMessage });
+    }
   };
 
+  // Success Modal
+  if (showSuccess) {
+    return (
+      <AuthCard>
+        <motion.div
+          initial={{ opacity: 0, scale: 0.9 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ duration: 0.5 }}
+          className="flex flex-col items-center text-center py-8"
+        >
+          <motion.div
+            initial={{ scale: 0 }}
+            animate={{ scale: 1 }}
+            transition={{ type: 'spring', stiffness: 200, damping: 15 }}
+            className="w-24 h-24 rounded-full border-4 border-[#c9a96e]/30 bg-[#c9a96e]/10 flex items-center justify-center mb-8"
+          >
+            <CheckCircle className="text-[#c9a96e]" size={52} strokeWidth={2.5} />
+          </motion.div>
+
+          <h2 className="text-white font-serif text-4xl font-bold mb-3">Welcome Back!</h2>
+          <p className="text-white/60 text-lg mb-2">Hello, {userName}</p>
+          <p className="text-white/40 text-sm max-w-xs">
+            You have successfully signed in. Redirecting to dashboard...
+          </p>
+
+          <div className="mt-10 w-full">
+            <div className="h-1 bg-white/10 rounded-full overflow-hidden">
+              <motion.div
+                initial={{ width: 0 }}
+                animate={{ width: '100%' }}
+                transition={{ duration: 2 }}
+                className="h-full bg-[#c9a96e] rounded-full"
+              />
+            </div>
+          </div>
+        </motion.div>
+      </AuthCard>
+    );
+  }
+
+  // Login Form
   return (
     <AuthCard>
       <AuthHeading title="Welcome Back" subtitle="Sign in to your admin dashboard" />
@@ -100,8 +188,12 @@ export default function LoginForm() {
           </Link>
         </div>
 
+        {errors.general && (
+          <p className="text-red-400/80 text-xs text-center py-2">{errors.general}</p>
+        )}
+
         <div className="mt-3">
-          <AuthButton loading={loading} type="submit">
+          <AuthButton loading={isLoading} type="submit">
             Sign In <ArrowRight size={15} />
           </AuthButton>
         </div>

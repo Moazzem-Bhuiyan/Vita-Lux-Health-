@@ -42,7 +42,11 @@ export const AuthInput = forwardRef<HTMLInputElement, AuthInputProps>(
               className="absolute right-4 top-1/2 -translate-y-1/2 text-white/30 hover:text-white/70 transition-colors"
               tabIndex={-1}
             >
-              {show ? <EyeOff size={16} /> : <Eye size={16} />}
+              {show ? (
+                <EyeOff color="#000000" size={20} className="pointer-events-none" />
+              ) : (
+                <Eye color="#000000" size={20} className="pointer-events-none" />
+              )}
             </button>
           )}
         </div>

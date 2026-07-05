@@ -1,14 +1,16 @@
-import { SectionHeader } from "@/components/ui/SectionHeader";
-import { Badge } from "@/components/ui/Badge";
-import { Button } from "@/components/ui/Button";
-import { PROMOTIONS } from "@/lib/data/misc";
-import Link from "next/link";
+import { SectionHeader } from '@/components/ui/SectionHeader';
+import { Badge } from '@/components/ui/Badge';
+
+import { PROMOTIONS } from '@/lib/data/misc';
+import Link from 'next/link';
+import { Button } from '@/components/ui';
 
 export function Promotions() {
   return (
     <section className="section-padding bg-stone-900 relative overflow-hidden">
       {/* Background decoration */}
-      <div className="absolute inset-0 opacity-5"
+      <div
+        className="absolute inset-0 opacity-5"
         style={{
           backgroundImage: `radial-gradient(circle at 20% 50%, rgba(201,169,110,0.4) 0%, transparent 50%), 
                             radial-gradient(circle at 80% 50%, rgba(201,169,110,0.2) 0%, transparent 50%)`,
@@ -60,12 +62,16 @@ export function Promotions() {
 
               <div className="space-y-2">
                 <Link href="/booking">
-                  <Button variant="gold-outline" size="sm" fullWidth>
+                  <Button size="sm" className="w-full">
                     Redeem Offer
                   </Button>
                 </Link>
                 <p className="font-sans text-[10px] text-stone-600 text-center">
-                  Valid until {new Date(promo.validUntil).toLocaleDateString("en-US", { month: "long", year: "numeric" })}
+                  Valid until{' '}
+                  {new Date(promo.validUntil).toLocaleDateString('en-US', {
+                    month: 'long',
+                    year: 'numeric',
+                  })}
                 </p>
               </div>
             </div>

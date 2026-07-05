@@ -2,7 +2,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { ArrowLeft, Clock, Calendar, Tag } from 'lucide-react';
 import type { BlogPost } from '@/types';
-import { formatDate } from '@/lib/utils';
+
 import { Badge } from '@/components/ui/Badge';
 import { BLOG_POSTS } from '@/lib/data/blog';
 
@@ -92,7 +92,6 @@ export function BlogDetailContent({ post }: Props) {
                 </div>
                 <div className="flex items-center gap-1 text-stone-400 ml-auto">
                   <Calendar size={12} />
-                  <span className="font-sans text-xs">{formatDate(post.publishedAt)}</span>
                 </div>
               </div>
 

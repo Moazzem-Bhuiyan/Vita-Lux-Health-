@@ -19,6 +19,9 @@ export default function ServiceDetailsContainer() {
   if (!slug) {
     return <div>Service not found</div>;
   }
+  if (isLoading) {
+    return <div className="py-20 text-center text-stone-500">Loading service details...</div>;
+  }
   return (
     <div>
       <ServiceDetailsHero serviceDetails={serviceDetails?.data} isLoading={isLoading} />

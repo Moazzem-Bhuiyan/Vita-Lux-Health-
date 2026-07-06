@@ -67,7 +67,10 @@ export function ServiceDetailsHero({
             className="flex flex-col sm:flex-row items-start sm:items-center gap-4 animate-fade-up"
             style={{ animationDelay: '0.5s' }}
           >
-            <BookButton className="rounded-md bg-white text-black hover:bg-stone-800">
+            <BookButton
+              defaultServiceId={serviceDetails?.id}
+              className="rounded-md bg-white text-black hover:bg-stone-800"
+            >
               Book Now
             </BookButton>
           </div>

@@ -22,12 +22,6 @@ export default function HomePage() {
       <ServicesSection />
       <TestimonialsSection />
       <ContactSection />
-
-      {/* <ServicesPreview />
-      <BookingWidget />
-      <Testimonials />
-      <Promotions />
-      <SocialMedia /> */}
     </>
   );
 }

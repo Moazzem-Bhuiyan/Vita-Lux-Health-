@@ -25,6 +25,8 @@ import { ModalHeading } from './ModalHeading';
 import { StepIndicator } from './StepIndicator';
 import { StepPersonal } from './StepPersonal';
 import { StepService } from './StepService';
+import { useSelector } from 'react-redux';
+import { selectUser } from '@/redux/features/authSlice';
 
 const EMPTY_FORM: BookingFormData = {
   personal: { fullName: '', email: '', phone: '' },
@@ -68,6 +70,7 @@ export function BookingModal({
   const [form, setForm] = React.useState<BookingFormData>(EMPTY_FORM);
   const [error, setError] = React.useState('');
   const [submitted, setSubmitted] = React.useState(false);
+  const user = useSelector(selectUser);
 
   // Reset the wizard every time it opens, pre-selecting the service that
   // was passed in (e.g. from a specific service page's Book button).
@@ -76,14 +79,20 @@ export function BookingModal({
     setStep(1);
     setError('');
     setSubmitted(false);
+    const defaultPersonal = {
+      fullName: user?.name || '',
+      email: user?.email || '',
+      phone: user?.phone_number || user?.phone || '',
+    };
     setForm({
       ...EMPTY_FORM,
       service: {
         ...EMPTY_FORM.service,
         serviceIds: defaultServiceId ? [defaultServiceId] : [],
       },
+      personal: defaultPersonal,
     });
-  }, [open, defaultServiceId]);
+  }, [open, defaultServiceId, user]);
 
   // Services — from your existing services API.
   const { data: serviceData, isLoading: servicesLoading } = useGetServicesQuery(

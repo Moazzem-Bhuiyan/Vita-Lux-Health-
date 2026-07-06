@@ -1,6 +1,8 @@
+import { useSelector } from 'react-redux';
 import { Input } from '../ui';
 import { Label } from '../ui/label';
 import { BookingFormData } from './booking-types';
+import { selectUser } from '@/redux/features/authSlice';
 
 export function StepPersonal({
   form,
@@ -11,6 +13,8 @@ export function StepPersonal({
     key: keyof BookingFormData['personal']
   ) => (e: React.ChangeEvent<HTMLInputElement>) => void;
 }) {
+  const user = useSelector(selectUser);
+
   return (
     <div className="flex flex-col gap-5">
       <div>

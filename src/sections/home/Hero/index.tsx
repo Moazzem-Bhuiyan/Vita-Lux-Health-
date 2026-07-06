@@ -82,11 +82,11 @@ export function Hero() {
                 Our Services
               </Button>
             </Link> */}
-            <Link href="/services">
+            <Link href="/#services" scroll>
               <Button
                 variant="ghost"
                 size="lg"
-                className="text-black hover:text-cream-50 hover:bg-white/10 bg-white shadow-luxury-lg font-medium p-5 rounded-none"
+                className="bg-white px-6 py-6 rounded-none text-black font-medium shadow-luxury-lg transition-all duration-300 hover:bg-stone-900 hover:text-white"
               >
                 Our Services
               </Button>

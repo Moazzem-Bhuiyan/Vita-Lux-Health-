@@ -2,7 +2,7 @@
 
 import * as React from 'react';
 import { format } from 'date-fns';
-import { CalendarIcon, Check, CheckCircle2, ChevronDown, Loader2, X } from 'lucide-react';
+import { CalendarIcon, Loader2 } from 'lucide-react';
 
 import { Calendar } from '@/components/ui/calendar';
 import { Dialog, DialogContent } from '@/components/ui/dialog';
@@ -17,7 +17,7 @@ import {
   type RawBookingSettingsResponse,
   type RawServiceListResponse,
 } from './BookingMappers';
-import { Button, Input, Textarea } from '../ui';
+import { Button, Textarea } from '../ui';
 import { useGetServicesQuery } from '@/redux/api/serviceApi';
 import { useGetBookingSettingsQuery } from '@/redux/api/locationApi';
 import { useSubmitBookingMutation } from '@/redux/api/bookingApi';
@@ -27,6 +27,8 @@ import { StepPersonal } from './StepPersonal';
 import { StepService } from './StepService';
 import { useSelector } from 'react-redux';
 import { selectUser } from '@/redux/features/authSlice';
+import { ConfirmedState } from './ConfirmedState';
+import { ReviewGroup, ReviewRow } from './ReviewRow';
 
 const EMPTY_FORM: BookingFormData = {
   personal: { fullName: '', email: '', phone: '' },
@@ -40,18 +42,18 @@ const STEPS: { n: BookingStep; label: string }[] = [
   { n: 3, label: 'Schedule' },
   { n: 4, label: 'Review' },
 ];
-
 export const TIME_SLOTS = [
-  { label: '09:00 AM', value: '09:00 AM' },
+  { label: '9:00 AM', value: '9:00 AM' },
   { label: '10:00 AM', value: '10:00 AM' },
   { label: '11:00 AM', value: '11:00 AM' },
   { label: '12:00 PM', value: '12:00 PM' },
-  { label: '01:00 PM', value: '13:00 PM' },
-  { label: '02:00 PM', value: '14:00 PM' },
-  { label: '03:00 PM', value: '15:00 PM' },
-  { label: '04:00 PM', value: '16:00 PM' },
+  { label: '1:00 PM', value: '1:00 PM' },
+  { label: '2:00 PM', value: '2:00 PM' },
+  { label: '3:00 PM', value: '3:00 PM' },
+  { label: '4:00 PM', value: '4:00 PM' },
+  { label: '5:00 PM', value: '5:00 PM' },
+  { label: '6:00 PM', value: '6:00 PM' },
 ];
-
 interface BookingModalProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
@@ -268,14 +270,14 @@ export function BookingModal({
                   <Button
                     type="button"
                     variant="secondary"
-                    className="flex-1 rounded-md"
+                    className="flex-1 rounded-md h-11 border"
                     onClick={onTalkWithUs}
                   >
                     Talk with us
                   </Button>
                   <Button
                     type="button"
-                    className="flex-1 rounded-md bg-stone-900 text-white hover:bg-stone-800"
+                    className="flex-1 rounded-md bg-stone-900 text-white hover:bg-stone-800 h-11"
                     disabled={isSubmitting}
                     onClick={handleNext}
                   >
@@ -296,12 +298,6 @@ export function BookingModal({
     </Dialog>
   );
 }
-
-/** Custom checkbox-list multi-select, styled to match the rest of the form's inputs. */
-
-/* ------------------------------------------------------------------ */
-/*  Step 3 — schedule                                                  */
-/* ------------------------------------------------------------------ */
 
 function StepSchedule({
   form,
@@ -404,11 +400,7 @@ function StepSchedule({
   );
 }
 
-/* ------------------------------------------------------------------ */
-/*  Step 4 — review                                                    */
-/* ------------------------------------------------------------------ */
-
-function StepReview({
+export function StepReview({
   form,
   selectedServices,
   locations,
@@ -420,7 +412,8 @@ function StepReview({
   totalPrice: number;
 }) {
   const locationName = locations.find((l) => l.id === form.service.locationId)?.name ?? '—';
-  const dateLabel = form.schedule.date ? format(form.schedule.date, 'PPP') : '—';
+
+  const dateLabel = form.schedule.date ? format(new Date(form.schedule.date), 'PPP') : '—';
 
   return (
     <div className="flex flex-col gap-4">
@@ -451,54 +444,6 @@ function StepReview({
         <ReviewRow label="Time" value={form.schedule.time || '—'} />
         {form.schedule.note && <ReviewRow label="Notes" value={form.schedule.note} />}
       </ReviewGroup>
-    </div>
-  );
-}
-
-function ReviewGroup({ title, children }: { title: string; children: React.ReactNode }) {
-  return (
-    <div className="overflow-hidden rounded-md border border-stone-100">
-      <div className="bg-stone-50 px-4 py-2">
-        <span className="text-[11px] font-semibold uppercase tracking-[0.14em] text-stone-500">
-          {title}
-        </span>
-      </div>
-      <div className="divide-y divide-stone-100">{children}</div>
-    </div>
-  );
-}
-
-function ReviewRow({ label, value }: { label: string; value: string }) {
-  return (
-    <div className="flex items-center justify-between gap-4 px-4 py-3">
-      <span className="text-xs text-stone-500">{label}</span>
-      <span className="text-right text-sm font-medium text-stone-900">{value}</span>
-    </div>
-  );
-}
-
-function ConfirmedState({ onClose }: { onClose: () => void }) {
-  return (
-    <div className="flex flex-col items-center gap-3 py-10 text-center">
-      <div className="flex h-14 w-14 items-center justify-center rounded-full bg-emerald-50">
-        <CheckCircle2 className="h-7 w-7 text-emerald-600" />
-      </div>
-      <h3
-        className="font-serif text-2xl text-stone-900"
-        style={{ fontFamily: "'Playfair Display', serif" }}
-      >
-        Consultation booked
-      </h3>
-      <p className="text-sm text-stone-500">
-        We&apos;ve sent a confirmation to your email. Our team will reach out shortly to confirm the
-        details.
-      </p>
-      <Button
-        className="mt-4 rounded-md bg-stone-900 text-white hover:bg-stone-800"
-        onClick={onClose}
-      >
-        Done
-      </Button>
     </div>
   );
 }

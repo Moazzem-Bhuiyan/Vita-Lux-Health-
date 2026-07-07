@@ -99,13 +99,15 @@ export default function AboutUs() {
             >
               <Link href="/services">
                 <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.96 }}>
-                  <Button
-                    variant="ghost"
-                    size="lg"
-                    className="bg-white font-medium text-black hover:bg-white/10 hover:text-white"
-                  >
-                    Our Services
-                  </Button>
+                  <Link href="/#services" scroll>
+                    <Button
+                      variant="ghost"
+                      size="lg"
+                      className="bg-white px-6 py-6 rounded-none text-black font-medium shadow-luxury-lg transition-all duration-300 hover:bg-stone-900 hover:text-white"
+                    >
+                      Our Services
+                    </Button>
+                  </Link>
                 </motion.div>
               </Link>
             </motion.div>

@@ -80,7 +80,10 @@ export function ServiceDetailsHero({
             className="font-sans font-light mt-10 text-cream-100/70 text-lg leading-relaxed max-w-xl mb-12 animate-fade-up"
             style={{ animationDelay: '0.35s' }}
           >
-            {serviceDetails?.service_details.slice(0, 200)}
+            <div
+              className="prose prose-lg max-w-none text-[#1a1008]/70 leading-relaxed"
+              dangerouslySetInnerHTML={{ __html: serviceDetails?.service_details.slice(0, 200) }}
+            />
           </p>
 
           {/* Stats bar */}

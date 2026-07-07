@@ -18,6 +18,7 @@ import {
   Sparkles,
   User as UserIcon,
   Loader2,
+  Edit,
 } from 'lucide-react';
 import { logout } from '@/redux/features/authSlice';
 import { useRouter } from 'next/navigation';
@@ -370,23 +371,12 @@ export default function UserDashboard() {
 
             <div className="px-6 py-5 flex gap-3">
               <button
-                onClick={() => setModalOpen(true)}
+                onClick={() => {}}
                 className="flex-1 inline-flex items-center justify-center gap-2 py-3 text-sm font-medium rounded-sm transition-all hover:opacity-90"
-                style={{ background: C.stone900, color: C.cream }}
+                style={{ background: '#000000', color: '#ffffff' }}
               >
-                <Lock size={15} />
-                Change Password
-              </button>
-              <button
-                onClick={() => {
-                  dispatch(logout());
-                  router.push('/');
-                }}
-                className="flex-1 inline-flex items-center justify-center gap-2 py-3 text-sm font-medium rounded-sm transition-all hover:opacity-90"
-                style={{ background: 'rgba(220,76,63,0.08)', color: '#b3392e' }}
-              >
-                <X size={15} />
-                Log Out
+                <Edit size={16} strokeWidth={2} />
+                Edit Profile
               </button>
             </div>
           </SectionCard>

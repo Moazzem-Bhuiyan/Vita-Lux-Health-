@@ -18,50 +18,26 @@ export function Hero() {
         }}
       />
 
-      {/* Background video */}
-      {/* <video
-        className="absolute inset-0 w-full h-full object-cover"
-        src="/heroVedio.mp4" // your video file
-        autoPlay
-        muted
-        loop
-        playsInline
-      /> */}
-
-      {/* Dark overlay with gradient */}
-      <div className="absolute inset-0 bg-gradient-to-r from-black/50 via-black/40 to-transparent" />
-
-      {/* Subtle grain texture */}
-      <div
-        className="absolute inset-0 opacity-30"
-        style={
-          {
-            // backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.15'/%3E%3C/svg%3E")`,
-          }
-        }
-      />
-
-      {/* Decorative gold lines */}
-      {/* <div className="absolute left-0 top-0 bottom-0 w-px bg-gradient-to-b from-transparent via-gold-500/30 to-transparent ml-[8vw] hidden lg:block" />
-      <div className="absolute right-0 top-0 bottom-0 w-px bg-gradient-to-b from-transparent via-gold-500/20 to-transparent mr-[8vw] hidden lg:block" /> */}
+      {/* Overlay */}
+      <div className="absolute inset-0 bg-gradient-to-r from-black/75 via-black/55 to-black/20 lg:from-black/50 lg:via-black/40 lg:to-transparent" />
 
       {/* Content */}
-      <div className="relative flex justify-between z-10 pt-32 pb-24">
-        <div className="max-w-5xl p-12  ">
+      <div className="relative z-10 flex justify-between pt-24 pb-16 sm:pt-28 sm:pb-20 lg:pt-32 lg:pb-24">
+        <div className="w-full max-w-5xl px-5 sm:px-8 md:px-10 lg:p-12">
           {/* Eyebrow */}
           <div
-            className="flex items-center gap-4 mb-8 animate-fade-in"
+            className="flex items-center gap-3 sm:gap-4 mb-5 sm:mb-8 animate-fade-in"
             style={{ animationDelay: '0.1s' }}
           >
-            <div className="w-12 h-px bg-gold-500" />
-            <span className="font-sans text-[10px] tracking-[0.3em] uppercase text-white font-medium">
+            <div className="w-8 sm:w-12 h-px bg-gold-500" />
+            <span className="font-sans text-[9px] sm:text-[10px] tracking-[0.22em] sm:tracking-[0.3em] uppercase text-white font-medium">
               Luxury · Wellness · Sanctuary
             </span>
           </div>
 
           {/* Heading */}
           <h1
-            className="font- text-cream-50 leading-[1.05] text-display-xl lg:text-[130px] font-bold mb-8 animate-fade-up"
+            className="text-cream-50 leading-[1.05] text-[52px] sm:text-[76px] md:text-[96px] lg:text-[130px] font-bold mb-6 sm:mb-8 animate-fade-up"
             style={{ animationDelay: '0.2s' }}
           >
             Elevate Your
@@ -69,24 +45,16 @@ export function Hero() {
             <em className="not-italic font-bold text-gold-400">Wellbeing</em>
           </h1>
 
-          {/* CTAs */}
+          {/* CTA */}
           <div
             className="flex flex-col sm:flex-row items-start sm:items-center gap-4 animate-fade-up"
             style={{ animationDelay: '0.5s' }}
           >
-            {/* <Link href="/booking">
-              <Button
-                size="lg"
-                className="bg-gold-500 hover:bg-gold-600 text-stone-900 shadow-gold-lg font-medium"
-              >
-                Our Services
-              </Button>
-            </Link> */}
             <Link href="/#services" scroll>
               <Button
                 variant="ghost"
                 size="lg"
-                className="bg-white px-6 py-6 rounded-none text-black font-medium shadow-luxury-lg transition-all duration-300 hover:bg-stone-900 hover:text-white"
+                className="bg-white px-6 py-5 sm:py-6 rounded-none text-black font-medium shadow-luxury-lg transition-all duration-300 hover:bg-stone-900 hover:text-white"
               >
                 Our Services
               </Button>
@@ -95,60 +63,53 @@ export function Hero() {
 
           {/* Subheading */}
           <p
-            className="font-sans font-light mt-10 text-cream-100/70 text-lg leading-relaxed max-w-xl mb-12 animate-fade-up"
+            className="font-sans font-light mt-7 sm:mt-10 text-cream-100/80 text-base sm:text-lg leading-relaxed max-w-xl mb-10 sm:mb-12 animate-fade-up"
             style={{ animationDelay: '0.35s' }}
           >
-            At AURUM STAR, wellness is more than a treatment — it&nbsp;s a personalized journey
+            At AURUM STAR, wellness is more than a treatment — it&apos;s a personalized journey
           </p>
 
           {/* Stats bar */}
           <div
-            className="mt-20 pt-10 border-t border-white/10 grid grid-cols-3 gap-8 max-w-2xl animate-fade-up"
+            className="mt-10 sm:mt-16 lg:mt-20 pt-7 sm:pt-10 border-t border-white/10 grid grid-cols-1 sm:grid-cols-3 gap-6 sm:gap-8 max-w-2xl animate-fade-up"
             style={{ animationDelay: '0.65s' }}
           >
             {[
-              { value: Icon1, label: 'Tailored treatment plans', title: 'Personalized Care' },
+              {
+                value: Icon1,
+                label: 'Tailored treatment plans',
+                title: 'Personalized Care',
+              },
               {
                 value: Icon2,
                 label: 'Access licensed providers for you',
                 title: 'Expert-Led Wellness',
               },
-              { value: Icon3, label: 'Supporting overall wellbeing', title: 'Holistic Approach' },
+              {
+                value: Icon3,
+                label: 'Supporting overall wellbeing',
+                title: 'Holistic Approach',
+              },
             ].map(({ value, label, title }) => (
-              <div key={label} className="space-y-2">
-                <p className=" text-2xl text-gold-400">
-                  <Image src={value} alt={title} className="w-8 h-8 object-contain" />
-                </p>
-                <p className="font-sans text-[14px] tracking-[0.15em] uppercase text-white mt-1">
-                  {title}
-                </p>
-                <p className="font-sans text-[10px] tracking-[0.15em] uppercase text-cream-100/50 mt-1">
-                  {label}
-                </p>
+              <div key={label} className="flex sm:block items-start gap-4 space-y-0 sm:space-y-2">
+                <Image src={value} alt={title} className="w-8 h-8 object-contain shrink-0" />
+
+                <div>
+                  <p className="font-sans text-[13px] sm:text-[14px] tracking-[0.13em] sm:tracking-[0.15em] uppercase text-white mt-0 sm:mt-1">
+                    {title}
+                  </p>
+                  <p className="font-sans text-[10px] tracking-[0.15em] uppercase text-cream-100/60 sm:text-cream-100/50 mt-1">
+                    {label}
+                  </p>
+                </div>
               </div>
             ))}
           </div>
         </div>
-        {/* <div className="p-12 max-w-5xl  h-96 ">
-          <div
-            className="absolute flex flex-wrap gap-5 justify-center items-center bottom-[145px] right-5 w-96 bg-white p-2 rounded-lg shadow-luxury-lg animate-fade-in"
-            style={{ animationDelay: '0.8s' }}
-          >
-            <video
-              className=" rounded-lg"
-              controls
-              poster="https://images.unsplash.com/photo-1544161515-4ab6ce6db874?w=800&q=80" // optional thumbnail
-            >
-              <source src="https://your-video-url.com/video.mp4" type="video/mp4" />
-              Your browser does not support the video tag.
-            </video>
-            <h1>Play Vedio</h1>
-          </div>
-        </div> */}
       </div>
 
       {/* Scroll indicator */}
-      <div className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 text-cream-100/40 animate-float">
+      <div className="hidden sm:flex absolute bottom-8 left-1/2 -translate-x-1/2 flex-col items-center gap-2 text-cream-100/40 animate-float">
         <span className="font-sans text-[9px] tracking-[0.25em] uppercase">Scroll</span>
         <ArrowDown size={14} />
       </div>

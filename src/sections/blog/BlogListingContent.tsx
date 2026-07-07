@@ -1,94 +1,156 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
-import { Clock, ArrowRight } from 'lucide-react';
-import { BLOG_POSTS } from '@/lib/data/blog';
+import { Clock, ArrowRight, Search } from 'lucide-react';
 import { Badge } from '@/components/ui/Badge';
 import { cn } from '@/lib/utils';
-import type { BlogCategory } from '@/types';
 import { BlogHero } from './BlogHero';
+import { Pagination } from '@/components/ui/pagination';
+import { Input } from '@/components/ui';
+import { useGetBlogsQuery } from '@/redux/api/blogApi';
 
-const CATEGORIES: { id: BlogCategory | 'all'; label: string }[] = [
-  { id: 'all', label: 'All Articles' },
-  { id: 'wellness', label: 'Wellness' },
-  { id: 'skincare', label: 'Skincare' },
-  { id: 'massage', label: 'Massage' },
-  { id: 'nutrition', label: 'Nutrition' },
-  { id: 'mindfulness', label: 'Mindfulness' },
-  { id: 'lifestyle', label: 'Lifestyle' },
-];
+type Blog = {
+  id: number;
+  title: string;
+  slug: string;
+  excerpt: string;
+  published_date: string;
+  content_details?: string;
+  status: boolean;
+  category?: {
+    id: number;
+    name: string;
+    type: string;
+  };
+  user?: {
+    id: number;
+    name: string;
+  };
+  media_library?: {
+    id: number;
+    file_path: string;
+  };
+};
 
 export function BlogListingContent() {
-  const [activeCategory, setActiveCategory] = useState<BlogCategory | 'all'>('all');
+  const [activeCategory, setActiveCategory] = useState<string>('all');
+  const [searchTerm, setSearchTerm] = useState('');
+  const [currentPage, setCurrentPage] = useState(1);
 
-  const filtered =
-    activeCategory === 'all' ? BLOG_POSTS : BLOG_POSTS.filter((p) => p.category === activeCategory);
+  const { data, isLoading, isError } = useGetBlogsQuery({
+    search: searchTerm,
+    category_name: activeCategory === 'all' ? '' : activeCategory,
+    page: currentPage,
+    per_page: 9,
+  });
 
-  const featured = BLOG_POSTS.find((p) => p.featured);
-  const rest = filtered.filter((p) => p.id !== featured?.id);
+  const blogs: Blog[] = data?.data?.data || [];
+  const pagination = data?.data;
+
+  // Dynamic Categories
+  const dynamicCategories = useMemo(() => {
+    const unique = new Set(blogs.map((post) => post.category?.name).filter(Boolean) as string[]);
+    return Array.from(unique);
+  }, [blogs]);
+
+  const allCategories = [
+    { id: 'all', label: 'All Articles' },
+    ...dynamicCategories.map((name) => ({ id: name, label: name })),
+  ];
+
+  // Featured Post
+  const featured = activeCategory === 'all' && !searchTerm && blogs.length > 0 ? blogs[0] : null;
+
+  const restPosts = featured ? blogs.slice(1) : blogs;
+
+  const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchTerm(e.target.value);
+    setCurrentPage(1);
+  };
+
+  const handleCategoryChange = (catId: string) => {
+    setActiveCategory(catId);
+    setCurrentPage(1);
+  };
+
+  if (isError) {
+    return (
+      <div className="text-center py-20 text-red-500">
+        Failed to load blogs. Please try again later.
+      </div>
+    );
+  }
 
   return (
     <>
-      {/* Page Hero */}
       <BlogHero />
 
-      {/* Featured post */}
-      {featured && activeCategory === 'all' && (
-        <section className="bg-cream-50 pt-20">
+      {/* Search & Filter */}
+      <div className="sticky top-16 bg-cream-50/95 backdrop-blur-sm border-b z-20">
+        <div className="container-luxury py-6">
+          <div className="flex flex-col md:flex-row gap-4 items-center">
+            <div className="relative flex-1 max-w-md">
+              <Search className="absolute left-4 top-3.5 text-stone-400" size={18} />
+              <Input
+                placeholder="Search articles..."
+                value={searchTerm}
+                onChange={handleSearch}
+                className="pl-11 bg-white"
+              />
+            </div>
+
+            <div className="flex items-center gap-2 overflow-x-auto pb-1">
+              {allCategories.map((cat) => (
+                <button
+                  key={cat.id}
+                  onClick={() => handleCategoryChange(cat.id)}
+                  className={cn(
+                    'flex-shrink-0 px-5 py-2 text-sm font-medium rounded-full whitespace-nowrap transition-all',
+                    activeCategory === cat.id
+                      ? 'bg-stone-900 text-white'
+                      : 'bg-white text-stone-600 hover:bg-stone-100'
+                  )}
+                >
+                  {cat.label}
+                </button>
+              ))}
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Featured */}
+      {featured && (
+        <section className="bg-cream-50 pt-12 pb-16">
           <div className="container-luxury">
-            <Link href={`/blog/${featured.slug}`} className="group block">
-              <article className="grid grid-cols-1 lg:grid-cols-2 gap-0 overflow-hidden border border-stone-100 hover:border-gold-500/20 hover:shadow-luxury-lg transition-all duration-500">
-                <div className="relative h-72 lg:h-auto min-h-64 overflow-hidden bg-stone-100">
+            <Link href={`/blog/blogDetails?slug=${featured.slug}`} className="group block">
+              <article className="grid grid-cols-1 lg:grid-cols-2 gap-0 overflow-hidden border border-stone-100 hover:border-gold-500/30 rounded-3xl">
+                <div className="relative h-80 lg:h-auto overflow-hidden">
                   <Image
-                    src={featured.image}
+                    src={
+                      featured.media_library?.file_path
+                        ? `http://103.186.20.110:9999/storage/${featured.media_library.file_path}`
+                        : '/placeholder.jpg'
+                    }
                     alt={featured.title}
                     fill
-                    priority
-                    className="object-cover transition-transform duration-700 group-hover:scale-105"
-                    sizes="(max-width: 1024px) 100vw, 50vw"
+                    className="object-cover group-hover:scale-105 transition-transform duration-700"
                   />
                 </div>
-                <div className="p-10 lg:p-14 flex flex-col justify-center space-y-5 bg-white">
-                  <div className="flex items-center gap-3">
-                    <Badge label={featured.category} variant="gold" />
-                    <span className=" text-[10px] text-stone-400">Featured</span>
-                  </div>
-                  <h2 className="font-serif text-display-md text-stone-900 font-light leading-tight group-hover:text-gold-700 transition-colors duration-300">
+                <div className="p-10 lg:p-14 flex flex-col justify-center bg-white">
+                  <Badge label={featured.category?.name || 'Blog'} variant="gold" />
+                  <h2 className="font-serif text-4xl mt-4 leading-tight group-hover:text-gold-700 transition-colors">
                     {featured.title}
                   </h2>
-                  <p className=" text-stone-500 font-light leading-relaxed text-sm">
-                    {featured.excerpt}
-                  </p>
-                  <div className="flex items-center gap-4 pt-2">
-                    <div className="flex items-center gap-2">
-                      <div className="w-8 h-8 rounded-full overflow-hidden bg-stone-100">
-                        <Image
-                          src={featured.author.image}
-                          alt={featured.author.name}
-                          width={32}
-                          height={32}
-                          className="object-cover"
-                        />
-                      </div>
-                      <div>
-                        <p className="font-sans text-xs text-stone-700 font-medium">
-                          {featured.author.name}
-                        </p>
-                        <p className="font-sans text-[10px] text-stone-400">
-                          {featured.author.title}
-                        </p>
-                      </div>
-                    </div>
-                    <span className="text-stone-200">·</span>
-                    <div className="flex items-center gap-1 text-stone-400">
-                      <Clock size={11} />
-                      <span className="font-sans text-xs">{featured.readTime} min read</span>
-                    </div>
-                  </div>
-                  <div className="flex items-center gap-2 font-sans text-[11px] tracking-widest uppercase text-gold-600 group-hover:gap-4 transition-all pt-2">
-                    Read Article <ArrowRight size={12} />
+                  <p className="mt-4 text-stone-600 line-clamp-3">{featured.excerpt}</p>
+
+                  <div className="mt-6 flex items-center gap-4 text-sm text-stone-500">
+                    <Clock size={16} />
+                    <span>5 min read</span>
+                    <span>•</span>
+                    <span>{new Date(featured.published_date).toLocaleDateString()}</span>
                   </div>
                 </div>
               </article>
@@ -97,85 +159,65 @@ export function BlogListingContent() {
         </section>
       )}
 
-      {/* Category filter */}
-      <div className="sticky top-16 bg-cream-50/95 backdrop-blur-sm border-b border-stone-100 z-20">
-        <div className="container-luxury">
-          <div className="flex items-center gap-1 overflow-x-auto py-4">
-            {CATEGORIES.map((cat) => (
-              <button
-                key={cat.id}
-                onClick={() => setActiveCategory(cat.id)}
-                className={cn(
-                  'flex-shrink-0 font-normal  text-[12px] tracking-[0.2em] uppercase px-4 py-2 transition-all duration-200',
-                  activeCategory === cat.id
-                    ? 'bg-stone-900 text-cream-50'
-                    : 'text-stone-500 hover:text-stone-800 hover:bg-stone-100'
-                )}
-              >
-                {cat.label}
-              </button>
-            ))}
-          </div>
-        </div>
-      </div>
-
-      {/* Article grid */}
+      {/* Blog Grid */}
       <section className="section-padding bg-cream-50">
         <div className="container-luxury">
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {rest.map((post) => (
-              <Link key={post.id} href={`/blog/${post.slug}`} className="group block">
-                <article className="luxury-card overflow-hidden h-full flex flex-col">
-                  <div className="relative h-52 overflow-hidden bg-stone-100">
-                    <Image
-                      src={post.image}
-                      alt={post.title}
-                      fill
-                      className="object-cover transition-transform duration-700 group-hover:scale-105"
-                      sizes="(max-width: 768px) 100vw, (max-width: 1280px) 50vw, 33vw"
-                    />
-                  </div>
-                  <div className="p-6 space-y-3 flex-1 flex flex-col">
-                    <div className="flex items-center gap-2">
-                      <Badge label={post.category} variant="stone" />
-                      <div className="flex items-center gap-1 text-stone-400">
-                        <Clock size={10} />
-                        <span className="font-sans text-[10px]">{post.readTime} min</span>
+          {isLoading ? (
+            <div className="text-center py-20">Loading articles...</div>
+          ) : (
+            <>
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                {restPosts.map((post) => (
+                  <Link
+                    key={post.id}
+                    href={`/blog/blogDetails?slug=${post.slug}`}
+                    className="group block"
+                  >
+                    <article className="luxury-card overflow-hidden h-full flex flex-col bg-white">
+                      <div className="relative h-52 overflow-hidden">
+                        <Image
+                          src={
+                            post.media_library?.file_path
+                              ? `http://103.186.20.110:9999/storage/${post.media_library.file_path}`
+                              : '/placeholder.jpg'
+                          }
+                          alt={post.title}
+                          fill
+                          className="object-cover group-hover:scale-105 transition-transform duration-700"
+                        />
                       </div>
-                    </div>
-                    <h2 className="font-display text-display-sm md:text-[24px] text-black font-bold leading-snug group-hover:text-gold-700 transition-colors duration-300 flex-1">
-                      {post.title}
-                    </h2>
-                    <p className="font-sans text-sm text-stone-500 font-light leading-relaxed line-clamp-2">
-                      {post.excerpt}
-                    </p>
-                    <div className="pt-3 border-t border-stone-100 flex items-center justify-between">
-                      <div className="flex items-center gap-2">
-                        <div className="w-6 h-6 rounded-full overflow-hidden bg-stone-100">
-                          <Image
-                            src={post.author.image}
-                            alt={post.author.name}
-                            width={24}
-                            height={24}
-                            className="object-cover"
-                          />
+                      <div className="p-6 flex-1 flex flex-col">
+                        <Badge label={post.category?.name || 'Blog'} variant="stone" />
+                        <h3 className="font-display text-xl mt-3 leading-tight group-hover:text-gold-700 transition-colors line-clamp-2">
+                          {post.title}
+                        </h3>
+                        <p className="mt-3 text-stone-500 text-sm line-clamp-3 flex-1">
+                          {post.excerpt}
+                        </p>
+                        <div className="pt-4 mt-auto border-t text-xs text-stone-400 flex justify-between">
+                          <span>{new Date(post.published_date).toLocaleDateString()}</span>
+                          <span>by {post.user?.name}</span>
                         </div>
-                        <p className="font-sans text-[10px] text-stone-500">{post.author.name}</p>
                       </div>
-                      <span className="font-sans text-[10px] text-stone-400">
-                        {/* {formatDate(post.publishedAt)} */}
-                      </span>
-                    </div>
-                  </div>
-                </article>
-              </Link>
-            ))}
-          </div>
+                    </article>
+                  </Link>
+                ))}
+              </div>
 
-          {filtered.length === 0 && (
-            <div className="text-center py-20 text-stone-400">
-              <p className="font-serif text-xl">No articles in this category yet.</p>
-            </div>
+              {restPosts.length === 0 && (
+                <div className="text-center py-20 text-stone-400">No articles found.</div>
+              )}
+
+              {pagination && pagination.last_page > 1 && (
+                <div className="mt-12 flex justify-center">
+                  {/* <Pagination
+                    currentPage={currentPage}
+                    totalPages={pagination.last_page}
+                    onPageChange={setCurrentPage}
+                  /> */}
+                </div>
+              )}
+            </>
           )}
         </div>
       </section>

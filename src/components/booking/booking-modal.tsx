@@ -20,7 +20,7 @@ import {
 import { Button, Input, Textarea } from '../ui';
 import { useGetServicesQuery } from '@/redux/api/serviceApi';
 import { useGetBookingSettingsQuery } from '@/redux/api/locationApi';
-import { useSubmitBookingMutation } from '@/redux/api/boookingApi';
+import { useSubmitBookingMutation } from '@/redux/api/bookingApi';
 import { ModalHeading } from './ModalHeading';
 import { StepIndicator } from './StepIndicator';
 import { StepPersonal } from './StepPersonal';
@@ -42,14 +42,14 @@ const STEPS: { n: BookingStep; label: string }[] = [
 ];
 
 export const TIME_SLOTS = [
-  { label: '09:00 AM', value: '09:00' },
-  { label: '10:00 AM', value: '10:00' },
-  { label: '11:00 AM', value: '11:00' },
-  { label: '12:00 PM', value: '12:00' },
-  { label: '01:00 PM', value: '13:00' },
-  { label: '02:00 PM', value: '14:00' },
-  { label: '03:00 PM', value: '15:00' },
-  { label: '04:00 PM', value: '16:00' },
+  { label: '09:00 AM', value: '09:00 AM' },
+  { label: '10:00 AM', value: '10:00 AM' },
+  { label: '11:00 AM', value: '11:00 AM' },
+  { label: '12:00 PM', value: '12:00 PM' },
+  { label: '01:00 PM', value: '13:00 PM' },
+  { label: '02:00 PM', value: '14:00 PM' },
+  { label: '03:00 PM', value: '15:00 PM' },
+  { label: '04:00 PM', value: '16:00 PM' },
 ];
 
 interface BookingModalProps {

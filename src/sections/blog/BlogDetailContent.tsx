@@ -1,238 +1,222 @@
-import Image from 'next/image';
+'use client';
+
+import { useGetBlogBySlugQuery } from '@/redux/api/blogApi';
+import { useSearchParams } from 'next/navigation';
 import Link from 'next/link';
-import { ArrowLeft, Clock, Calendar, Tag } from 'lucide-react';
-import type { BlogPost } from '@/types';
-
+import Image from 'next/image';
+import { motion } from 'framer-motion';
+import { Calendar, Clock, User } from 'lucide-react';
 import { Badge } from '@/components/ui/Badge';
-import { BLOG_POSTS } from '@/lib/data/blog';
 
-interface Props {
-  post: BlogPost;
-}
+const IMAGE_BASE_URL = process.env.NEXT_PUBLIC_IMAGE_URL || 'http://103.186.20.110:9999/storage';
 
-// Sample long-form content paragraphs
-const SAMPLE_CONTENT = [
-  "The relationship between the nervous system and therapeutic touch is one of the most fascinating frontiers in modern wellness science. When skilled hands apply pressure to the body, a cascade of neurochemical events unfolds—cortisol levels drop, serotonin rises, and the parasympathetic nervous system shifts from its defensive posture into what researchers now call the 'rest-and-digest' state.",
-  'For decades, massage was considered a luxury—a pleasant indulgence with few measurable health benefits. That perception has changed dramatically. A landmark study published in the International Journal of Neuroscience found that participants who received regular therapeutic massage showed significant reductions in cortisol (the primary stress hormone) and measurable increases in dopamine and serotonin—the neurotransmitters associated with mood regulation, focus, and emotional resilience.',
-  "Perhaps most remarkably, the effects are not confined to the duration of the treatment. Brain imaging studies reveal that a single 60-minute session can reduce activity in the amygdala—the brain's threat-detection center—for up to 48 hours afterward. This suggests that regular therapeutic touch doesn't merely provide temporary relief; it may actually reshape neural pathways over time.",
-  'The implications for stress-related conditions are profound. Chronic stress is now understood to be a root cause or significant contributing factor in over 75% of all physician visits in the United States. Conditions ranging from cardiovascular disease and autoimmune disorders to insomnia and depression all have measurable stress components. A wellness practice that addresses stress at the neurological level—rather than simply masking symptoms—represents a meaningful shift in how we approach health.',
-  'At Aurum Star, our therapists are trained not just in technique, but in the science behind each modality. Understanding why a particular stroke or pressure point activates specific neural responses allows our team to customize treatments with a level of precision that goes far beyond conventional spa offerings. Every session is a collaboration between clinical knowledge and intuitive artistry.',
-  'The path to lasting wellness is rarely a single dramatic intervention. More often, it is the cumulative effect of consistent, intentional practices—of showing up for yourself with regularity and care. Therapeutic massage, when approached not as occasional treat but as a cornerstone of a holistic wellness strategy, has the potential to meaningfully transform your relationship with stress, your body, and your capacity for joy.',
-];
+const Skeleton = () => (
+  <div className="animate-pulse">
+    <div className="h-8 bg-stone-200 rounded w-3/4 mb-4" />
+    <div className="h-4 bg-stone-200 rounded w-full mb-2" />
+    <div className="h-4 bg-stone-200 rounded w-5/6 mb-2" />
+    <div className="h-4 bg-stone-200 rounded w-4/5" />
+  </div>
+);
 
-export function BlogDetailContent({ post }: Props) {
-  const related = BLOG_POSTS.filter((p) => p.category === post.category && p.id !== post.id).slice(
-    0,
-    3
-  );
+const BlogDetailContent = () => {
+  const params = useSearchParams();
+  const slug = params.get('slug');
+
+  const { data, isLoading, isError } = useGetBlogBySlugQuery({ slug: slug || '' }, { skip: !slug });
+
+  const blog = data?.data?.blog;
+  const relatedBlogs = data?.data?.related_blogs || [];
+
+  // Loading State
+  if (isLoading) {
+    return (
+      <article className="bg-cream-50 min-h-screen pb-20">
+        {/* Hero Skeleton */}
+        <div className="relative h-[65vh] md:h-[75vh] bg-stone-200 overflow-hidden">
+          <div className="absolute inset-0 bg-gradient-to-b from-black/40 via-black/60 to-black/80" />
+          <div className="absolute inset-0 flex items-center">
+            <div className="container-luxury">
+              <div className="max-w-4xl">
+                <div className="h-6 w-28 bg-white/30 rounded mb-6" />
+                <div className="h-16 md:h-20 bg-white/30 rounded-2xl w-11/12 mb-6" />
+                <div className="h-16 md:h-20 bg-white/30 rounded-2xl w-4/5" />
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div className="container-luxury -mt-12 relative z-10">
+          <div className="max-w-3xl mx-auto bg-white rounded-3xl shadow-xl p-10 md:p-16">
+            {/* Meta Skeleton */}
+            <div className="flex gap-8 mb-12 border-b pb-10">
+              {[...Array(3)].map((_, i) => (
+                <div key={i} className="h-5 bg-stone-200 rounded w-32" />
+              ))}
+            </div>
+
+            {/* Content Skeleton */}
+            <div className="space-y-6">
+              <Skeleton />
+              <Skeleton />
+              <div className="h-80 bg-stone-100 rounded-2xl" />
+              <Skeleton />
+            </div>
+          </div>
+        </div>
+      </article>
+    );
+  }
+
+  if (isError || !blog) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-cream-50 text-center px-6">
+        <div>
+          <h2 className="text-4xl font-serif mb-3">Story Not Found</h2>
+          <p className="text-stone-500 mb-8">
+            We couldn&apos;t find the article you&apos;re looking for.
+          </p>
+          <Link
+            href="/blog"
+            className="inline-flex items-center gap-2 px-8 py-4 bg-stone-900 text-white rounded-full hover:bg-black transition-colors"
+          >
+            ← Back to All Articles
+          </Link>
+        </div>
+      </div>
+    );
+  }
 
   return (
-    <>
-      {/* Hero */}
-      <div className="relative pt-24">
-        <div className="relative h-[50vh] min-h-[380px] overflow-hidden bg-stone-200">
-          <Image
-            src={post.image}
-            alt={post.title}
-            fill
-            priority
-            className="object-cover"
-            sizes="100vw"
-          />
-          <div className="absolute inset-0 bg-gradient-to-t from-stone-900/80 via-stone-900/50 to-stone-900/60" />
+    <article className="bg-cream-50 min-h-screen pb-20">
+      {/* Hero Image */}
+      <div className="relative h-[65vh] md:h-[75vh] overflow-hidden">
+        <Image
+          src={`${IMAGE_BASE_URL}/${blog.media_library?.file_path}`}
+          alt={blog.title}
+          fill
+          className="object-cover"
+          priority
+        />
+        <div className="absolute inset-0 bg-gradient-to-b from-black/40 via-black/60 to-black/80" />
 
-          <div className="absolute top-8 left-0 right-0 container-luxury">
-            <Link
-              href="/blog"
-              className="inline-flex items-center gap-2 text-cream-100 hover:text-cream-50 font-sans text-xs tracking-widest uppercase transition-colors"
+        <div className="absolute inset-0 flex items-center">
+          <div className="container-luxury">
+            <motion.div
+              initial={{ opacity: 0, y: 40 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.9 }}
             >
-              <ArrowLeft size={12} /> Journal
-            </Link>
-          </div>
-
-          <div className="absolute bottom-20 left-0 right-0 container-luxury pb-12 space-y-4">
-            <div className="flex items-center gap-3">
-              <Badge label={post.category} variant="stone" />
-              <div className="flex items-center gap-1 text-cream-100/60">
-                <Clock size={11} />
-                <span className="font-sans text-[11px]">{post.readTime} min read</span>
-              </div>
-            </div>
-            <h1 className=" text-display-lg text-cream-50 md:text-[72px] font-light max-w-4xl leading-tight">
-              {post.title}
-            </h1>
+              <Badge label={blog.category?.name} variant="gold" className="mb-6" />
+              <h1 className="text-5xl md:text-7xl font-serif text-white leading-[1.05] max-w-5xl">
+                {blog.title}
+              </h1>
+            </motion.div>
           </div>
         </div>
       </div>
 
-      {/* Article body */}
-      <div className="bg-cream-50 section-padding">
-        <div className="container-luxury">
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-16">
-            {/* Article */}
-            <article className="lg:col-span-8 space-y-8">
-              {/* Author + meta */}
-              <div className="flex items-center gap-6 pb-8 border-b border-stone-200">
-                <div className="flex items-center gap-3">
-                  <div className="w-12 h-12 rounded-full overflow-hidden bg-stone-100 flex-shrink-0">
-                    <Image
-                      src={post.author.image}
-                      alt={post.author.name}
-                      width={48}
-                      height={48}
-                      className="object-cover"
-                    />
-                  </div>
-                  <div>
-                    <p className="font-sans text-sm font-medium text-stone-800">
-                      {post.author.name}
-                    </p>
-                    <p className="font-sans text-xs text-stone-400">{post.author.title}</p>
-                  </div>
-                </div>
-                <div className="flex items-center gap-1 text-stone-400 ml-auto">
-                  <Calendar size={12} />
-                </div>
-              </div>
+      <div className="container-luxury -mt-12 relative z-10">
+        <div className="max-w-3xl mx-auto bg-white rounded-3xl shadow-2xl p-10 md:p-16">
+          {/* Meta Info */}
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.3 }}
+            className="flex flex-wrap items-center gap-x-8 gap-y-3 text-sm text-stone-500 mb-12 border-b pb-10"
+          >
+            <div className="flex items-center gap-2">
+              <Calendar size={18} />
+              {new Date(blog.published_date).toLocaleDateString('en-US', {
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric',
+              })}
+            </div>
+            <div className="flex items-center gap-2">
+              <User size={18} />
+              By {blog.user?.name}
+            </div>
+            <div className="flex items-center gap-2">
+              <Clock size={18} />5 min read
+            </div>
+          </motion.div>
 
-              {/* Excerpt lead */}
-              <p className="font-serif text-xl text-stone-600 font-light italic leading-relaxed border-l-2 border-gold-500 pl-6">
-                {post.excerpt}
-              </p>
+          {/* Blog Content */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.5 }}
+            className="prose prose-stone prose-headings:font-serif prose-headings:font-light prose-lg max-w-none"
+            dangerouslySetInnerHTML={{ __html: blog.content_details || '' }}
+          />
 
-              {/* Body paragraphs */}
-              <div className="space-y-6">
-                {SAMPLE_CONTENT.map((para, i) => (
-                  <p
-                    key={i}
-                    className="font-sans text-stone-600 font-light leading-relaxed text-base"
-                  >
-                    {para}
-                  </p>
-                ))}
-              </div>
-
-              {/* Tags */}
-              <div className="pt-8 border-t border-stone-200 flex flex-wrap items-center gap-2">
-                <Tag size={13} className="text-stone-400" />
-                {post.tags.map((tag) => (
-                  <span
-                    key={tag}
-                    className="font-sans text-[10px] tracking-widest uppercase text-stone-500 border border-stone-200 px-3 py-1 hover:border-gold-500/50 hover:text-gold-700 transition-colors cursor-pointer"
-                  >
-                    {tag}
-                  </span>
-                ))}
-              </div>
-            </article>
-
-            {/* Sidebar */}
-            <aside className="lg:col-span-4 space-y-10">
-              {/* CTA card */}
-              {/* <div className="bg-stone-900 p-8 space-y-4 text-center">
-                <p className="eyebrow text-gold-500">Ready to Experience This?</p>
-                <p className="font-serif text-xl text-cream-50 font-light leading-snug">
-                  Book a Treatment Today
-                </p>
-                <p className="font-sans text-xs text-stone-400 font-light leading-relaxed">
-                  Our therapists are ready to craft a personalized experience for you.
-                </p>
-                <Link
-                  href="/booking"
-                  className="inline-block w-full bg-gold-500 hover:bg-gold-600 text-stone-900 font-sans text-[10px] tracking-[0.2em] uppercase py-3 transition-colors font-medium"
-                >
-                  Reserve Now
-                </Link>
-              </div> */}
-
-              {/* About author */}
-              <div className="border border-stone-200 p-6 space-y-4">
-                <p className="eyebrow text-gold-600">About the Author</p>
-                <div className="flex items-center gap-3">
-                  <div className="w-14 h-14 rounded-full overflow-hidden bg-stone-100 flex-shrink-0">
-                    <Image
-                      src={post.author.image}
-                      alt={post.author.name}
-                      width={56}
-                      height={56}
-                      className="object-cover"
-                    />
-                  </div>
-                  <div>
-                    <p className="font-serif text-stone-900">{post.author.name}</p>
-                    <p className="font-sans text-xs text-stone-400">{post.author.title}</p>
-                  </div>
-                </div>
-                <p className="font-sans text-sm text-stone-500 font-light leading-relaxed">
-                  A dedicated member of the Aurum Star wellness team, bringing years of expertise
-                  and passion for holistic health to every article and treatment.
-                </p>
-              </div>
-
-              {/* Popular tags */}
-              <div className="space-y-4">
-                <p className="eyebrow text-gold-600">Popular Topics</p>
-                <div className="flex flex-wrap gap-2">
-                  {[
-                    'wellness',
-                    'skincare',
-                    'massage',
-                    'mindfulness',
-                    'nutrition',
-                    'stress',
-                    'sleep',
-                    'anti-aging',
-                  ].map((tag) => (
-                    <span
-                      key={tag}
-                      className="font-sans text-[10px] tracking-widest uppercase text-stone-500 border border-stone-200 px-3 py-1.5 hover:border-gold-500/50 hover:text-gold-700 transition-colors cursor-pointer"
-                    >
-                      {tag}
-                    </span>
-                  ))}
-                </div>
-              </div>
-            </aside>
+          {/* Author */}
+          <div className="mt-16 pt-10 border-t flex items-center gap-5">
+            <div className="w-16 h-16 rounded-2xl overflow-hidden bg-stone-100 flex-shrink-0">
+              <Image src="/default-avatar.png" alt={blog.user?.name || ''} width={64} height={64} />
+            </div>
+            <div>
+              <p className="text-xl font-medium">{blog.user?.name}</p>
+              <p className="text-stone-500">Wellness Writer</p>
+            </div>
           </div>
+        </div>
+      </div>
 
-          {/* Related posts */}
-          {related.length > 0 && (
-            <div className="mt-24 pt-16 border-t border-stone-200">
-              <div className="flex items-center gap-4 mb-10">
-                <div className="w-12 h-px bg-gold-500" />
-                <p className="eyebrow text-gold-600">Related Articles</p>
-              </div>
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                {related.map((p) => (
-                  <Link key={p.id} href={`/blog/${p.slug}`} className="group block">
-                    <div className="luxury-card overflow-hidden">
-                      <div className="relative h-40 overflow-hidden">
-                        <Image
-                          src={p.image}
-                          alt={p.title}
-                          fill
-                          className="object-cover transition-transform duration-700 group-hover:scale-105"
-                          sizes="(max-width: 768px) 100vw, 33vw"
-                        />
-                      </div>
-                      <div className="p-5 space-y-2">
-                        <Badge label={p.category} variant="stone" />
-                        <h3 className="font-serif text-base text-stone-900 group-hover:text-gold-700 transition-colors leading-snug">
-                          {p.title}
-                        </h3>
-                        <div className="flex items-center gap-1 text-stone-400">
-                          <Clock size={10} />
-                          <span className="font-sans text-[10px]">{p.readTime} min read</span>
-                        </div>
+      {/* Related Blogs */}
+      {relatedBlogs.length > 0 && (
+        <div className="mt-24 container-luxury">
+          <h2 className="text-4xl font-serif mb-10 text-center">You May Also Like</h2>
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {relatedBlogs.map((related: any, index: number) => (
+              <motion.div
+                key={related.id}
+                initial={{ opacity: 0, y: 30 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                transition={{ delay: index * 0.1 }}
+              >
+                <Link href={`/blog/blogDetails?slug=${related.slug}`} className="group block">
+                  <div className="luxury-card overflow-hidden h-full flex flex-col bg-white">
+                    <div className="relative h-56 overflow-hidden">
+                      <Image
+                        src={`${IMAGE_BASE_URL}/${related.media_library?.file_path}`}
+                        alt={related.title}
+                        fill
+                        className="object-cover group-hover:scale-105 transition-transform duration-700"
+                      />
+                    </div>
+                    <div className="p-7 flex-1 flex flex-col">
+                      <Badge label={related.category?.name} variant="stone" />
+                      <h3 className="font-display text-xl mt-4 leading-tight group-hover:text-gold-700 transition-colors line-clamp-3">
+                        {related.title}
+                      </h3>
+                      <p className="mt-4 text-stone-500 text-sm line-clamp-3 flex-1">
+                        {related.excerpt}
+                      </p>
+                      <div className="pt-6 text-xs text-stone-400 flex justify-between mt-auto">
+                        <span>{new Date(related.published_date).toLocaleDateString()}</span>
+                        <span>by {related.user?.name}</span>
                       </div>
                     </div>
-                  </Link>
-                ))}
-              </div>
-            </div>
-          )}
+                  </div>
+                </Link>
+              </motion.div>
+            ))}
+          </div>
         </div>
+      )}
+
+      <div className="text-center mt-16">
+        <Link
+          href="/blog"
+          className="inline-flex items-center gap-3 px-10 py-4 bg-stone-900 text-white rounded-full hover:bg-black transition-all"
+        >
+          ← Explore All Articles
+        </Link>
       </div>
-    </>
+    </article>
   );
-}
+};
+
+export default BlogDetailContent;

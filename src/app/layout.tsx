@@ -8,6 +8,7 @@ import ReduxProviders from '@/redux/lib/ReduxProvider';
 
 import { cn } from '@/lib/utils';
 import { BookingProvider } from '@/components/booking/booking-context';
+import { Toaster } from '@/components/ui/sonner';
 
 // const geist = Geist({ subsets: ['latin'], variable: '--font-sans' });
 
@@ -70,6 +71,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <ReduxProviders>
           <BookingProvider>
             <Navbar />
+            <Toaster duration={5000} position="top-center" richColors />
             <main className="flex-1">{children}</main>
             <NewsletterBanner />
             <Footer />

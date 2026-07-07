@@ -22,8 +22,8 @@ import {
 import { logout } from '@/redux/features/authSlice';
 import { useRouter } from 'next/navigation';
 import { useDispatch } from 'react-redux';
-import { useGetMyProfileQuery } from '@/redux/api/authApi';
 import { useGetUserQuery } from '@/redux/api/userApi';
+import ChangePasswordModal from './Changepassword';
 
 /* ------------------------------------------------------------------ */
 /*  Types                                                              */
@@ -270,15 +270,6 @@ function MembershipCard({ profile }: { profile: Profile }) {
 }
 
 /* ------------------------------------------------------------------ */
-/*  Change Password Modal                                             */
-/* ------------------------------------------------------------------ */
-function ChangePasswordModal({ open, onClose }: { open: boolean; onClose: () => void }) {
-  // ... (your existing modal code - keeping it as is for now)
-  // You can keep your previous modal implementation here
-  return null; // Replace with your full modal if needed
-}
-
-/* ------------------------------------------------------------------ */
 /*  Main Component                                                    */
 /* ------------------------------------------------------------------ */
 export default function UserDashboard() {
@@ -311,7 +302,7 @@ export default function UserDashboard() {
         @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400&family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600&display=swap');
       `}</style>
 
-      <div className="max-w-4xl mx-auto px-5 md:px-8 py-10 md:py-16">
+      <div className="max-w-4xl mx-auto px-5 md:px-8 py-10 md:py-2">
         <div className="mb-8">
           <Eyebrow>My Account</Eyebrow>
           <h1
@@ -405,8 +396,6 @@ export default function UserDashboard() {
           Account created {fmtDate(profile.created_at)}
         </p>
       </div>
-
-      <ChangePasswordModal open={modalOpen} onClose={() => setModalOpen(false)} />
     </div>
   );
 }

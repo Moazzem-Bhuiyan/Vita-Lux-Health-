@@ -113,7 +113,17 @@ export function Navbar() {
                         fontFamily: "'Playfair Display', serif",
                       }}
                     >
-                      {initials(user?.first_name, user?.last_name)}
+                      <Image
+                        src={
+                          user?.avatar
+                            ? `http://103.186.20.110:9999/storage/${user.avatar}`
+                            : initials(user?.first_name, user?.last_name)
+                        }
+                        alt={user?.first_name || 'User'}
+                        width={100}
+                        height={100}
+                        className="rounded-full aspect-square object-cover w-10 h-10 md:w-10 md:h-10"
+                      />
                     </span>
                   </div>
                 </span>

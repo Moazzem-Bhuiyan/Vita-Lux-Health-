@@ -36,12 +36,12 @@ const EMPTY_FORM: BookingFormData = {
   schedule: { date: undefined, time: '', note: '' },
 };
 
-const STEPS: { n: BookingStep; label: string }[] = [
-  { n: 1, label: 'Personal Info' },
-  { n: 2, label: 'Service Info' },
-  { n: 3, label: 'Schedule' },
-  { n: 4, label: 'Review' },
-];
+// const STEPS: { n: BookingStep; label: string }[] = [
+//   { n: 1, label: 'Personal Info' },
+//   { n: 2, label: 'Service Info' },
+//   { n: 3, label: 'Schedule' },
+//   { n: 4, label: 'Review' },
+// ];
 export const TIME_SLOTS = [
   { label: '9:00 AM', value: '9:00 AM' },
   { label: '10:00 AM', value: '10:00 AM' },

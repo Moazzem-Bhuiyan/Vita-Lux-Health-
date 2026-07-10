@@ -136,7 +136,7 @@ const BlogDetailContent = () => {
             <div className="flex items-center gap-2">
               <User size={18} />
               By {blog.user?.name}
-            </div>
+            </div>iu
             <div className="flex items-center gap-2">
               <Clock size={18} />5 min read
             </div>

@@ -6,7 +6,9 @@ import { ArrowLeft, ArrowRight, ShieldCheck } from 'lucide-react';
 import { motion } from 'motion/react';
 import { AuthCard, AuthButton, OtpInput } from '@/components/shared/AuthPrimitives';
 import { useRouter, useSearchParams } from 'next/navigation';
-import { useVerifyEmailMutation } from '@/redux/api/authApi';
+import { useForgetPasswordMutation, useVerifyEmailMutation } from '@/redux/api/authApi';
+import { Button } from '@/components/ui';
+import { toast } from 'sonner';
 
 const OTP_LENGTH = 6;
 const RESEND_SECONDS = 60;
@@ -20,6 +22,7 @@ export default function OtpVerificationForm({ email: propEmail = '' }: { email?:
 
   const router = useRouter();
   const params = useSearchParams();
+  const next = params.get('next');
 
   // Get email from URL params or props
   const email = params.get('email') || propEmail;
@@ -35,9 +38,17 @@ export default function OtpVerificationForm({ email: propEmail = '' }: { email?:
   }, [countdown]);
 
   const [verifyOtp, { isLoading: isVerifying }] = useVerifyEmailMutation();
-
-  const handleResend = () => {
-    // TODO: Call resend OTP API here later
+  const [forgotPass] = useForgetPasswordMutation();
+  const handleResend = async () => {
+    try {
+      const response = await forgotPass({ email }).unwrap();
+      if (response?.status === 'success') {
+        toast.success(response?.message);
+      }
+    } catch (err: any) {
+      const message = err?.data?.message || err?.error || 'Failed to send OTP. Please try again.';
+      setError(message);
+    }
     setCountdown(RESEND_SECONDS);
     setCanResend(false);
     setOtp(Array(OTP_LENGTH).fill(''));
@@ -67,16 +78,16 @@ export default function OtpVerificationForm({ email: propEmail = '' }: { email?:
         otp: code,
       };
 
-      console.log('Sending OTP payload:', payload); // For debugging
+      // console.log('Sending OTP payload:', payload); // For debugging
 
       const result = await verifyOtp(payload).unwrap();
-
-      console.log('OTP Verification Success:', result);
-      setSuccess(true);
-
+      if (result?.status === 'success') {
+        localStorage.setItem('verifyEmail-token', result.data.token);
+        setSuccess(true);
+      }
       // Optional: Redirect after success
       setTimeout(() => {
-        router.push('/login');
+        router.push(next === 'resetPassword' ? '/resetPassword' : '/login');
       }, 1500);
     } catch (err: any) {
       console.error('OTP Verification Failed:', err);
@@ -105,12 +116,12 @@ export default function OtpVerificationForm({ email: propEmail = '' }: { email?:
           </motion.div>
           <h2 className="text-white font-serif text-3xl font-bold mb-3">Verified!</h2>
           <p className="text-white/40 text-sm mb-8">Your identity has been confirmed.</p>
-          <Link
+          {/* <Link
             href="/auth/reset-password"
             className="flex items-center gap-2 text-[#c9a96e] text-sm font-medium hover:opacity-80 transition-opacity"
           >
             Set new password <ArrowRight size={14} />
-          </Link>
+          </Link> */}
         </motion.div>
       </AuthCard>
     );
@@ -119,12 +130,12 @@ export default function OtpVerificationForm({ email: propEmail = '' }: { email?:
   return (
     <AuthCard>
       {/* Back Button */}
-      <Link
-        href="/auth/forgot-password"
+      <Button
+        onClick={() => router.back()}
         className="flex items-center gap-2 text-white/35 text-xs hover:text-white/65 transition-colors mb-8"
       >
         <ArrowLeft size={13} /> Back
-      </Link>
+      </Button>
 
       <div className="text-center mb-8">
         <motion.div

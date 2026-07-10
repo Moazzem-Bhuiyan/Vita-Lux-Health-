@@ -9,6 +9,8 @@ import ReduxProviders from '@/redux/lib/ReduxProvider';
 import { cn } from '@/lib/utils';
 import { BookingProvider } from '@/components/booking/booking-context';
 import { Toaster } from '@/components/ui/sonner';
+import Script from 'next/script';
+import ScrollContext from '@/components/shared/ScrollContext';
 
 // const geist = Geist({ subsets: ['latin'], variable: '--font-sans' });
 
@@ -62,22 +64,24 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" suppressHydrationWarning className={cn('font-sans')}>
+    <html lang="en" suppressHydrationWarning className={cn('font-sans scroll-smooth')}>
       <head>
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
       </head>
       <body className="min-h-screen flex flex-col">
-        <ReduxProviders>
-          <BookingProvider>
-            <Navbar />
-            <Toaster duration={5000} position="top-center" richColors />
-            <main className="flex-1">{children}</main>
-            <NewsletterBanner />
-            <Footer />
-            {/* <Chatbot /> */}
-          </BookingProvider>
-        </ReduxProviders>
+        <ScrollContext>
+          <ReduxProviders>
+            <BookingProvider>
+              <Navbar />
+              <Toaster duration={5000} position="top-center" richColors />
+              <main className="flex-1">{children}</main>
+              <NewsletterBanner />
+              <Footer />
+              <Chatbot />
+            </BookingProvider>
+          </ReduxProviders>
+        </ScrollContext>
       </body>
     </html>
   );

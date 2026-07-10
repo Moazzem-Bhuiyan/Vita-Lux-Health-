@@ -145,3 +145,27 @@
 ::-webkit-scrollbar-thumb:hover {
   background: #a07850;
 }
+
+/* Fix for modals when using Lenis */
+.custom-modal-scroll {
+  scrollbar-width: thin;
+  scrollbar-color: #c9a96e #f3f0e8;
+}
+
+.custom-modal-scroll::-webkit-scrollbar {
+  width: 6px;
+}
+
+.custom-modal-scroll::-webkit-scrollbar-thumb {
+  background-color: #c9a96e;
+  border-radius: 20px;
+}
+
+.custom-modal-scroll::-webkit-scrollbar-track {
+  background: #f3f0e8;
+}
+
+/* Prevent Lenis from interfering with modal scroll */
+[data-lenis-prevent] {
+  overflow: auto !important;
+}

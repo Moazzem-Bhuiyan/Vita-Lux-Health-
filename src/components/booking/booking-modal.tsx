@@ -212,23 +212,28 @@ export function BookingModal({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="w-[calc(100vw-2rem)] gap-0 overflow-hidden border-none bg-white p-0 sm:max-w-2xl">
-        {/* Cap the whole dialog to the viewport height, then let ONLY the
-            body scroll — the header/steps and the footer buttons stay put
-            no matter how tall the Review step gets. */}
-        <div className="flex max-h-[85vh] flex-col">
+      <DialogContent
+        data-lenis-prevent
+        className="!w-[calc(100vw-2rem)] gap-0 overflow-hidden border-none bg-white p-0 sm:max-w-2xl max-h-[92vh] flex flex-col"
+      >
+        <div className="flex max-h-[92vh] flex-col overflow-hidden">
+          {' '}
+          {/* ← Important */}
           {submitted ? (
-            <div className="px-8 py-10 sm:px-10">
+            <div className="p-8 sm:p-10">
               <ConfirmedState onClose={() => onOpenChange(false)} />
             </div>
           ) : (
             <>
-              <div className="flex-1 overflow-y-auto px-8 pt-10 sm:px-10">
+              {/* Header - Fixed */}
+              <div className="shrink-0 px-8 pt-10 sm:px-10">
                 <ModalHeading />
                 <StepIndicator step={step} onStepClick={handleStepClick} />
+              </div>
 
+              {/* Scrollable Content Area */}
+              <div className="flex-1 overflow-y-auto px-8 py-6 sm:px-10 custom-modal-scroll">
                 {step === 1 && <StepPersonal form={form} onChange={updatePersonal} />}
-
                 {step === 2 && (
                   <StepService
                     form={form}
@@ -238,14 +243,12 @@ export function BookingModal({
                     onChange={(next) => setForm((f) => ({ ...f, service: next }))}
                   />
                 )}
-
                 {step === 3 && (
                   <StepSchedule
                     form={form}
                     onChange={(next) => setForm((f) => ({ ...f, schedule: next }))}
                   />
                 )}
-
                 {step === 4 && (
                   <StepReview
                     form={form}
@@ -254,18 +257,12 @@ export function BookingModal({
                     totalPrice={totalPrice}
                   />
                 )}
-
-                {error && (
-                  <p className="mt-4 text-sm text-red-600" role="alert">
-                    {error}
-                  </p>
-                )}
-
-                {/* Spacer so the last field never sits flush against the footer */}
-                <div className="h-6" />
+                {error && <p className="mt-4 text-sm text-red-600">{error}</p>}
+                <div className="h-8" /> {/* Bottom padding */}
               </div>
 
-              <div className="shrink-0 border-t border-stone-100 px-8 py-5 sm:px-10">
+              {/* Footer - Fixed */}
+              <div className="shrink-0 border-t border-stone-100 px-8 py-5 sm:px-10 bg-white">
                 <div className="flex items-center gap-3">
                   <Button
                     type="button"
@@ -416,7 +413,7 @@ export function StepReview({
   const dateLabel = form.schedule.date ? format(new Date(form.schedule.date), 'PPP') : '—';
 
   return (
-    <div className="flex flex-col gap-4">
+    <div className="flex flex-col gap-4 overflow-hidden">
       <p className="text-sm text-stone-500">
         Please review your details before confirming. You can go back to any step to make changes.
       </p>

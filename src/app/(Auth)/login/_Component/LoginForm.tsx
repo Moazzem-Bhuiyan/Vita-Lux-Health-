@@ -6,7 +6,7 @@ import { ArrowRight, CheckCircle } from 'lucide-react';
 import { motion } from 'motion/react';
 import { AuthCard, AuthHeading, AuthInput, AuthButton } from '@/components/shared/AuthPrimitives';
 import { useSignInMutation } from '@/redux/api/authApi';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { useDispatch } from 'react-redux';
 import { setUser } from '@/redux/features/authSlice';
 
@@ -17,7 +17,7 @@ export default function LoginForm() {
   const [errors, setErrors] = useState<{ email?: string; password?: string; general?: string }>({});
   const [showSuccess, setShowSuccess] = useState(false);
   const [userName, setUserName] = useState('');
-
+  const searchParams = useSearchParams();
   const router = useRouter();
   const [login, { isLoading }] = useSignInMutation();
 
@@ -73,7 +73,10 @@ export default function LoginForm() {
 
         // Auto redirect after showing success
         setTimeout(() => {
-          router.push('/'); // or '/dashboard'
+          const redirectPath = searchParams.get('redirect') || '/';
+
+          router.replace(redirectPath);
+          router.refresh();
         }, 1800);
       } else {
         setErrors({ general: result?.message || 'Login failed. Please try again.' });
@@ -179,13 +182,13 @@ export default function LoginForm() {
             </div>
             <span className="text-white/40 text-xs">Remember me</span>
           </label>
-          {/* 
+
           <Link
             href="/forgetPassword"
             className="text-xs text-white/40 hover:text-[#c9a96e] transition-colors"
           >
             Forgot password?
-          </Link> */}
+          </Link>
         </div>
 
         {errors.general && (

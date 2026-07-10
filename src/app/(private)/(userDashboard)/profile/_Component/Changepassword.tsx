@@ -2,6 +2,7 @@
 
 import React, { useState } from 'react';
 import { X, Loader2, CheckCircle2, AlertCircle, Eye, EyeOff, Lock } from 'lucide-react';
+import { useChangepasswordMutation } from '@/redux/api/authApi';
 
 const C = {
   cream: '#FAF6EE',
@@ -11,14 +12,6 @@ const C = {
   stone200: '#E7E2D8',
   goldDark: '#A07850',
 };
-
-type PasswordFormState = {
-  current: string;
-  next: string;
-  confirm: string;
-};
-
-type PasswordStatus = 'idle' | 'loading' | 'success';
 
 interface ChangePasswordModalProps {
   open: boolean;
@@ -30,25 +23,26 @@ export default function ChangePasswordModal({ open, onClose }: ChangePasswordMod
   const [showNew, setShowNew] = useState(false);
   const [showConfirm, setShowConfirm] = useState(false);
 
-  const [form, setForm] = useState<PasswordFormState>({
-    current: '',
-    next: '',
-    confirm: '',
+  const [form, setForm] = useState({
+    old_password: '',
+    password: '',
+    password_confirmation: '',
   });
 
+  const [changePassword, { isLoading }] = useChangepasswordMutation();
+
   const [error, setError] = useState('');
-  const [status, setStatus] = useState<PasswordStatus>('idle');
+  const [status, setStatus] = useState<'idle' | 'loading' | 'success'>('idle');
 
   if (!open) return null;
 
-  const handleChange =
-    (key: keyof PasswordFormState) => (e: React.ChangeEvent<HTMLInputElement>) => {
-      setForm((f) => ({ ...f, [key]: e.target.value }));
-      setError('');
-    };
+  const handleChange = (key: keyof typeof form) => (e: React.ChangeEvent<HTMLInputElement>) => {
+    setForm((prev) => ({ ...prev, [key]: e.target.value }));
+    setError('');
+  };
 
   const strength = (() => {
-    const v = form.next;
+    const v = form.password;
     if (!v) return 0;
     let s = 0;
     if (v.length >= 8) s++;
@@ -61,25 +55,32 @@ export default function ChangePasswordModal({ open, onClose }: ChangePasswordMod
   const strengthLabel = ['Too weak', 'Weak', 'Fair', 'Good', 'Strong'][strength];
   const strengthColor = ['#dc4c3f', '#dc4c3f', '#b45309', '#1f7a4d', '#1f7a4d'][strength];
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setError('');
 
-    if (!form.current) return setError('Enter your current password.');
-    if (form.next.length < 8) return setError('New password must be at least 8 characters.');
-    if (form.next !== form.confirm) return setError('New password and confirmation do not match.');
+    if (!form.old_password) return setError('Enter your current password.');
+    if (form.password.length < 8) return setError('New password must be at least 8 characters.');
+    if (form.password !== form.password_confirmation) {
+      return setError('New password and confirmation do not match.');
+    }
 
     setStatus('loading');
 
-    // TODO: Replace with real API call later
-    setTimeout(() => {
+    try {
+      await changePassword(form).unwrap();
       setStatus('success');
+
       setTimeout(() => {
         setStatus('idle');
-        setForm({ current: '', next: '', confirm: '' });
+        setForm({ old_password: '', password: '', password_confirmation: '' });
         onClose();
-      }, 1400);
-    }, 1100);
+      }, 1500);
+    } catch (err: any) {
+      setStatus('idle');
+      const message = err?.data?.message || 'Failed to change password. Please try again.';
+      setError(message);
+    }
   };
 
   return (
@@ -133,8 +134,8 @@ export default function ChangePasswordModal({ open, onClose }: ChangePasswordMod
           <form onSubmit={handleSubmit} className="px-7 py-8 flex flex-col gap-6">
             <PasswordInput
               label="Current Password"
-              value={form.current}
-              onChange={handleChange('current')}
+              value={form.old_password}
+              onChange={handleChange('old_password')}
               show={showCurrent}
               onToggle={() => setShowCurrent(!showCurrent)}
             />
@@ -142,12 +143,12 @@ export default function ChangePasswordModal({ open, onClose }: ChangePasswordMod
             <div>
               <PasswordInput
                 label="New Password"
-                value={form.next}
-                onChange={handleChange('next')}
+                value={form.password}
+                onChange={handleChange('password')}
                 show={showNew}
                 onToggle={() => setShowNew(!showNew)}
               />
-              {form.next && (
+              {form.password && (
                 <div className="mt-2 flex items-center gap-3">
                   <div className="flex-1 h-1.5 bg-stone-200 rounded-full overflow-hidden">
                     <div
@@ -164,8 +165,8 @@ export default function ChangePasswordModal({ open, onClose }: ChangePasswordMod
 
             <PasswordInput
               label="Confirm New Password"
-              value={form.confirm}
-              onChange={handleChange('confirm')}
+              value={form.password_confirmation}
+              onChange={handleChange('password_confirmation')}
               show={showConfirm}
               onToggle={() => setShowConfirm(!showConfirm)}
             />
@@ -191,11 +192,11 @@ export default function ChangePasswordModal({ open, onClose }: ChangePasswordMod
               </button>
               <button
                 type="submit"
-                disabled={status === 'loading'}
+                disabled={isLoading}
                 className="flex-1 py-3 text-sm font-medium rounded-lg text-white transition-all disabled:opacity-70"
                 style={{ background: C.stone900 }}
               >
-                {status === 'loading' ? (
+                {isLoading ? (
                   <>
                     <Loader2 size={18} className="animate-spin inline mr-2" />
                     Updating...
@@ -212,6 +213,7 @@ export default function ChangePasswordModal({ open, onClose }: ChangePasswordMod
   );
 }
 
+/* Password Input Component */
 interface PasswordInputProps {
   label: string;
   value: string;
@@ -241,6 +243,7 @@ function PasswordInput({ label, value, onChange, show, onToggle }: PasswordInput
           className="flex-1 bg-transparent outline-none text-[15px]"
           style={{ color: C.stone900 }}
           placeholder="••••••••"
+          required
         />
         <button type="button" onClick={onToggle} className="text-stone-500 hover:text-stone-700">
           {show ? <EyeOff size={18} /> : <Eye size={18} />}

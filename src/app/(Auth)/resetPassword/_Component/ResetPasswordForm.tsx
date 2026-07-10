@@ -1,10 +1,12 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { ArrowLeft, ArrowRight, Check } from 'lucide-react';
 import { motion } from 'motion/react';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { AuthCard, AuthHeading, AuthInput, AuthButton } from '@/components/shared/AuthPrimitives';
+import { useResetPasswordMutation } from '@/redux/api/authApi';
 
 const rules = [
   { label: 'At least 8 characters', test: (p: string) => p.length >= 8 },
@@ -20,23 +22,54 @@ export default function ResetPasswordForm() {
   const [success, setSuccess] = useState(false);
   const [errors, setErrors] = useState<{ password?: string; confirm?: string }>({});
 
+  const router = useRouter();
+  const [resetPass] = useResetPasswordMutation();
+
   const allRulesPassed = rules.every((r) => r.test(password));
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+
     const errs: typeof errors = {};
-    if (!allRulesPassed) errs.password = 'Password does not meet all requirements';
-    if (password !== confirm) errs.confirm = 'Passwords do not match';
+
+    if (!allRulesPassed) {
+      errs.password = 'Password does not meet all requirements';
+    }
+    if (password !== confirm) {
+      errs.confirm = 'Passwords do not match';
+    }
     if (Object.keys(errs).length) {
       setErrors(errs);
       return;
     }
+
     setErrors({});
     setLoading(true);
-    await new Promise((r) => setTimeout(r, 1600));
-    setLoading(false);
-    setSuccess(true);
+
+    try {
+      const payload = { password, password_confirmation: confirm };
+      await resetPass(payload).unwrap();
+      localStorage.removeItem('verifyEmail-token');
+      setSuccess(true);
+    } catch (err: any) {
+      const message =
+        err?.data?.message || err?.error || 'Failed to reset password. Please try again.';
+
+      setErrors({ password: message });
+    } finally {
+      setLoading(false);
+    }
   };
+
+  // Auto-redirect after success (optional)
+  useEffect(() => {
+    if (success) {
+      const timer = setTimeout(() => {
+        router.push('/login');
+      }, 2500);
+      return () => clearTimeout(timer);
+    }
+  }, [success, router]);
 
   if (success) {
     return (
@@ -75,7 +108,7 @@ export default function ResetPasswordForm() {
     <AuthCard>
       {/* Back */}
       <Link
-        href="/auth/verify-otp"
+        href="/otpVerify"
         className="flex items-center gap-2 text-white/35 text-xs hover:text-white/65 transition-colors mb-8"
       >
         <ArrowLeft size={13} /> Back

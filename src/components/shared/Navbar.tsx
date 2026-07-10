@@ -13,6 +13,8 @@ import { selectUser } from '@/redux/features/authSlice';
 import { useSelector } from 'react-redux';
 import { Button } from '../ui';
 import { BookButton } from '../booking/book-button';
+import { useGetUserQuery } from '@/redux/api/userApi';
+import { Profile } from '@/app/(private)/(userDashboard)/profile/_Component/UserProfile';
 
 const NAV_LINKS = [
   { label: 'Home', href: '/' },
@@ -29,6 +31,10 @@ export function Navbar() {
   const pathname = usePathname();
   const user = useSelector(selectUser);
   const router = useRouter();
+
+  const { data: profileData } = useGetUserQuery(undefined, { skip: !user });
+
+  const profile = profileData?.data as Profile | undefined;
 
   function initials(first?: string, last?: string): string {
     return `${first?.[0] ?? ''}${last?.[0] ?? ''}`.toUpperCase();
@@ -59,6 +65,8 @@ export function Navbar() {
       document.body.style.overflow = '';
     };
   }, [isMobileOpen]);
+
+  const avatarUrl = profile?.avatar ? `http://103.186.20.110:9999/${profile.avatar}` : null;
 
   const isHome = pathname === '/' || pathname === '/service/serviceDetails' || pathname === '/blog';
   const isTransparent = isHome && !isScrolled;
@@ -139,9 +147,9 @@ export function Navbar() {
                       border: `1px solid ${isTransparent ? 'rgba(255,255,255,0.3)' : 'rgba(0,0,0,0.1)'}`,
                     }}
                   >
-                    {hasAvatar ? (
+                    {avatarUrl ? (
                       <Image
-                        src={`http://103.186.20.110:9999/storage/${user.avatar}`}
+                        src={avatarUrl}
                         alt={user?.first_name || 'User'}
                         width={40}
                         height={40}

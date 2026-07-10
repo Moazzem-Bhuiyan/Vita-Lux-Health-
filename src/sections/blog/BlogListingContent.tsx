@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useMemo } from 'react';
+import { motion } from 'framer-motion';
 import Image from 'next/image';
 import Link from 'next/link';
 import { Clock, ArrowRight, Search } from 'lucide-react';
@@ -205,7 +206,21 @@ export function BlogListingContent() {
               </div>
 
               {restPosts.length === 0 && (
-                <div className="text-center py-20 text-stone-400">No articles found.</div>
+                <div className="flex flex-col items-center justify-center h-[420px] text-center px-4">
+                  <motion.div
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.6 }}
+                  >
+                    <div className="text-[90px] mb-6">🌿</div>
+                    <h3 className="text-3xl font-semibold text-[#1a1008] mb-3">
+                      No Articles Found
+                    </h3>
+                    <p className="text-[#1a1008]/60 max-w-sm mx-auto text-lg">
+                      We couldn&apos;t find any articles that match your search.
+                    </p>
+                  </motion.div>
+                </div>
               )}
 
               {pagination && pagination.last_page > 1 && (

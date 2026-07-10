@@ -4,7 +4,10 @@ import { useState } from 'react';
 import Link from 'next/link';
 import { ArrowRight, ArrowLeft, Mail } from 'lucide-react';
 import { motion } from 'motion/react';
+import { useRouter } from 'next/navigation';
 import { AuthCard, AuthHeading, AuthInput, AuthButton } from '@/components/shared/AuthPrimitives';
+import { useForgetPasswordMutation } from '@/redux/api/authApi';
+import { toast } from 'sonner';
 
 export default function ForgotPasswordForm() {
   const [email, setEmail] = useState('');
@@ -12,8 +15,12 @@ export default function ForgotPasswordForm() {
   const [loading, setLoading] = useState(false);
   const [sent, setSent] = useState(false);
 
+  const router = useRouter();
+  const [forgotPass] = useForgetPasswordMutation();
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+
     if (!email.trim()) {
       setError('Email is required');
       return;
@@ -22,13 +29,30 @@ export default function ForgotPasswordForm() {
       setError('Enter a valid email address');
       return;
     }
+
     setError('');
     setLoading(true);
-    await new Promise((r) => setTimeout(r, 1500));
-    setLoading(false);
-    setSent(true);
+
+    try {
+      const response = await forgotPass({ email }).unwrap();
+
+      // Success → navigate to OTP verify with email + next path
+      const nextPath = 'resetPassword'; // for forgot password flow
+
+      if (response?.status === 'success') {
+        toast.success(response?.message);
+        setSent(true);
+        router.push(`/otpVarify?email=${encodeURIComponent(email)}&next=${nextPath}`);
+      }
+    } catch (err: any) {
+      const message = err?.data?.message || err?.error || 'Failed to send OTP. Please try again.';
+      setError(message);
+    } finally {
+      setLoading(false);
+    }
   };
 
+  // Success screen (kept for cases where you want to show it before redirect)
   if (sent) {
     return (
       <AuthCard>
@@ -38,7 +62,6 @@ export default function ForgotPasswordForm() {
           transition={{ duration: 0.5 }}
           className="flex flex-col items-center text-center"
         >
-          {/* Icon */}
           <motion.div
             initial={{ scale: 0 }}
             animate={{ scale: 1 }}
@@ -50,7 +73,7 @@ export default function ForgotPasswordForm() {
 
           <h2 className="text-white font-serif text-3xl font-bold mb-3">Check Your Email</h2>
           <p className="text-white/40 text-sm leading-relaxed mb-3">
-            We&apos;ve sent a password reset link to
+            We&apos;ve sent a password reset OTP to
           </p>
           <p className="text-[#c9a96e] text-sm font-medium mb-8">{email}</p>
 
@@ -87,7 +110,7 @@ export default function ForgotPasswordForm() {
 
       <AuthHeading
         title="Forgot Password?"
-        subtitle="No worries — enter your email and we'll send a reset link"
+        subtitle="No worries — enter your email and we'll send an OTP to reset your password."
       />
 
       <form onSubmit={handleSubmit} className="flex flex-col gap-4">
@@ -106,7 +129,7 @@ export default function ForgotPasswordForm() {
 
         <div className="mt-3">
           <AuthButton loading={loading} type="submit">
-            Send Reset Link <ArrowRight size={15} />
+            Send OTP <ArrowRight size={15} />
           </AuthButton>
         </div>
       </form>

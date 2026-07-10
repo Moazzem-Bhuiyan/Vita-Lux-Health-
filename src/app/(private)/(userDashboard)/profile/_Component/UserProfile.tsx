@@ -7,29 +7,21 @@ import {
   Calendar,
   MapPin,
   Shield,
-  Lock,
-  Eye,
-  EyeOff,
   CheckCircle2,
   AlertCircle,
-  Copy,
-  Check,
-  X,
   Sparkles,
   User as UserIcon,
-  Loader2,
   Edit,
 } from 'lucide-react';
-import { logout } from '@/redux/features/authSlice';
-import { useRouter } from 'next/navigation';
-import { useDispatch } from 'react-redux';
 import { useGetUserQuery } from '@/redux/api/userApi';
-import ChangePasswordModal from './Changepassword';
+
+import EditProfileModal from './EditProfileModal';
+import MembershipCard from './MemberShipCard';
 
 /* ------------------------------------------------------------------ */
 /*  Types                                                              */
 /* ------------------------------------------------------------------ */
-interface Profile {
+export interface Profile {
   id?: number;
   name?: string;
   first_name?: string;
@@ -45,7 +37,6 @@ interface Profile {
   city?: string | null;
   invite_client?: string;
   avatar?: string;
-  membership_tier?: 'Silver' | 'Gold' | 'Platinum' | string;
   role?: string;
   intakeq_client_id?: string;
   created_at?: string;
@@ -68,27 +59,6 @@ const C = {
   goldSoft: 'rgba(201,169,110,0.14)',
 };
 
-const tierTheme: Record<string, any> = {
-  Silver: {
-    card: 'linear-gradient(135deg,#6b7280 0%,#9ca3af 28%,#e5e7eb 50%,#9ca3af 72%,#4b5563 100%)',
-    label: 'Silver',
-    ring: '#c4c9d1',
-    text: '#2b2b2b',
-  },
-  Gold: {
-    card: 'linear-gradient(135deg,#8a6a2f 0%,#c9a96e 30%,#f2dfae 50%,#c9a96e 70%,#7a5a24 100%)',
-    label: 'Gold',
-    ring: '#c9a96e',
-    text: '#2b2107',
-  },
-  Platinum: {
-    card: 'linear-gradient(135deg,#0f0f10 0%,#2b2b2e 30%,#5a5a5e 50%,#2b2b2e 70%,#0f0f10 100%)',
-    label: 'Platinum',
-    ring: '#c9a96e',
-    text: '#f5f2ea',
-  },
-};
-
 function fmtDate(d?: string | null): string {
   if (!d) return 'Not provided';
   return new Date(d).toLocaleDateString('en-US', {
@@ -98,13 +68,57 @@ function fmtDate(d?: string | null): string {
   });
 }
 
-function fmtMonthYear(d?: string | null): string {
-  if (!d) return 'Unknown';
-  return new Date(d).toLocaleDateString('en-US', { year: 'numeric', month: 'long' });
-}
+/* ------------------------------------------------------------------ */
+/*  Skeleton Loader                                                   */
+/* ------------------------------------------------------------------ */
+function ProfileSkeleton() {
+  return (
+    <div
+      className="min-h-screen w-full"
+      style={{ background: C.cream, fontFamily: "'DM Sans', sans-serif" }}
+    >
+      <div className="max-w-4xl mx-auto px-5 md:px-8 py-10 md:py-2">
+        {/* Header Skeleton */}
+        <div className="mb-8">
+          <div className="h-3 w-24 bg-stone-200 rounded mb-3" />
+          <div className="h-10 w-80 bg-stone-200 rounded" />
+        </div>
 
-function initials(first?: string, last?: string): string {
-  return `${first?.[0] ?? ''}${last?.[0] ?? ''}`.toUpperCase();
+        {/* Two Column Skeleton */}
+        <div className="grid md:grid-cols-2 gap-6">
+          {[1, 2].map((i) => (
+            <div
+              key={i}
+              className="rounded-sm border backdrop-blur-sm overflow-hidden"
+              style={{
+                background: 'rgba(255,255,255,0.7)',
+                borderColor: C.stone200,
+              }}
+            >
+              <div className="px-6 pt-5 pb-3">
+                <div className="h-7 w-48 bg-stone-200 rounded" />
+              </div>
+              {Array.from({ length: 4 }).map((_, idx) => (
+                <div
+                  key={idx}
+                  className="flex items-start gap-4 py-5 px-6 border-b last:border-b-0"
+                  style={{ borderColor: C.stone100 }}
+                >
+                  <div className="w-9 h-9 rounded-full bg-stone-200 shrink-0" />
+                  <div className="flex-1 space-y-2">
+                    <div className="h-3 w-20 bg-stone-200 rounded" />
+                    <div className="h-5 w-3/4 bg-stone-200 rounded" />
+                  </div>
+                </div>
+              ))}
+            </div>
+          ))}
+        </div>
+
+        <div className="h-3 w-48 bg-stone-200 mx-auto mt-10 rounded" />
+      </div>
+    </div>
+  );
 }
 
 /* ------------------------------------------------------------------ */
@@ -191,106 +205,38 @@ function VerifiedPill({ verified }: { verified: boolean }) {
 }
 
 /* ------------------------------------------------------------------ */
-/*  Membership Card                                                   */
-/* ------------------------------------------------------------------ */
-function MembershipCard({ profile }: { profile: Profile }) {
-  const tier = profile.membership_tier || 'Silver';
-  const theme = tierTheme[tier] || tierTheme.Silver;
-  const [copied, setCopied] = useState(false);
-
-  const copyId = () => {
-    if (profile.intakeq_client_id) {
-      navigator.clipboard.writeText(profile.intakeq_client_id);
-      setCopied(true);
-      setTimeout(() => setCopied(false), 1500);
-    }
-  };
-
-  return (
-    <div
-      className="relative w-full overflow-hidden rounded-md p-8 md:p-10"
-      style={{ background: theme.card, boxShadow: '0 20px 45px -18px rgba(28,25,23,0.45)' }}
-    >
-      <div className="relative flex flex-col md:flex-row md:items-center md:justify-between gap-8">
-        <div className="flex items-center gap-5">
-          <div
-            className="w-16 h-16 md:w-20 md:h-20 rounded-full flex items-center justify-center shrink-0"
-            style={{ background: 'rgba(255,255,255,0.18)', border: `1px solid ${theme.ring}55` }}
-          >
-            <span
-              className="text-2xl"
-              style={{ color: theme.text, fontFamily: "'Playfair Display', serif" }}
-            >
-              {initials(profile.first_name, profile.last_name)}
-            </span>
-          </div>
-          <div>
-            <p
-              className="text-[10px] uppercase tracking-[0.28em] mb-1 opacity-70"
-              style={{ color: theme.text }}
-            >
-              Member Portal
-            </p>
-            <h1
-              className="text-2xl md:text-3xl leading-tight"
-              style={{ color: theme.text, fontFamily: "'Playfair Display', serif" }}
-            >
-              {profile.first_name || 'User'}
-            </h1>
-            <p className="text-sm mt-1 opacity-80" style={{ color: theme.text }}>
-              Member since {fmtMonthYear(profile.created_at)}
-            </p>
-          </div>
-        </div>
-
-        <div className="flex flex-col items-start md:items-end gap-3">
-          <span
-            className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-xs font-semibold uppercase tracking-[0.14em]"
-            style={{
-              background: 'rgba(255,255,255,0.22)',
-              color: theme.text,
-              border: `1px solid ${theme.ring}66`,
-            }}
-          >
-            <Sparkles size={12} /> {theme.label} Tier
-          </span>
-          {profile.intakeq_client_id && (
-            <button
-              onClick={copyId}
-              className="inline-flex items-center gap-1.5 text-xs opacity-80 hover:opacity-100 transition-opacity"
-              style={{ color: theme.text }}
-            >
-              Client ID #{profile.intakeq_client_id}
-              {copied ? <Check size={12} /> : <Copy size={12} />}
-            </button>
-          )}
-        </div>
-      </div>
-    </div>
-  );
-}
-
-/* ------------------------------------------------------------------ */
 /*  Main Component                                                    */
 /* ------------------------------------------------------------------ */
 export default function UserDashboard() {
   const [modalOpen, setModalOpen] = useState(false);
-  const [addressNote, setAddressNote] = useState(false);
 
-  const router = useRouter();
-  const dispatch = useDispatch();
-
-  const { data: profileData, isLoading } = useGetUserQuery({});
+  const { data: profileData, isLoading, isError } = useGetUserQuery({});
 
   const profile = profileData?.data as Profile | undefined;
 
   if (isLoading) {
-    return <div className="min-h-screen flex items-center justify-center">Loading profile...</div>;
+    return <ProfileSkeleton />;
   }
 
-  if (!profile) {
+  if (isError || !profile) {
     return (
-      <div className="min-h-screen flex items-center justify-center">Failed to load profile.</div>
+      <div
+        className="min-h-screen flex items-center justify-center"
+        style={{ background: C.cream }}
+      >
+        <div className="text-center">
+          <p className="text-xl" style={{ color: C.stone700 }}>
+            Failed to load profile
+          </p>
+          <button
+            onClick={() => window.location.reload()}
+            className="mt-4 px-6 py-2.5 text-sm font-medium rounded-sm hover:bg-stone-100 transition-colors"
+            style={{ border: `1px solid ${C.stone200}` }}
+          >
+            Retry
+          </button>
+        </div>
+      </div>
     );
   }
 
@@ -313,9 +259,7 @@ export default function UserDashboard() {
             Welcome back, {profile.first_name?.split(' ')[0] || 'User'}
           </h1>
         </div>
-
         <MembershipCard profile={profile} />
-
         <div className="grid md:grid-cols-2 gap-6 mt-8">
           {/* Personal Details */}
           <SectionCard>
@@ -371,7 +315,7 @@ export default function UserDashboard() {
 
             <div className="px-6 py-5 flex gap-3">
               <button
-                onClick={() => {}}
+                onClick={() => setModalOpen(true)}
                 className="flex-1 inline-flex items-center justify-center gap-2 py-3 text-sm font-medium rounded-sm transition-all hover:opacity-90"
                 style={{ background: '#000000', color: '#ffffff' }}
               >
@@ -386,6 +330,9 @@ export default function UserDashboard() {
           Account created {fmtDate(profile.created_at)}
         </p>
       </div>
+
+      {/* Modal */}
+      <EditProfileModal isOpen={modalOpen} onClose={() => setModalOpen(false)} profile={profile} />
     </div>
   );
 }

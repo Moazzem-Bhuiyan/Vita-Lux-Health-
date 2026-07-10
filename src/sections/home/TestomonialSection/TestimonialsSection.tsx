@@ -6,12 +6,15 @@ import { ChevronLeft, ChevronRight } from 'lucide-react';
 import Image from 'next/image';
 import { useCheckReviewEligibilityQuery, useGetReviewsQuery } from '@/redux/api/reviewApi';
 import { FeedbackForm, StarRating } from './FeedBackForm';
+import { useSelector } from 'react-redux';
+import { selectUser } from '@/redux/features/authSlice';
 
 export default function TestimonialsSection() {
   const sectionRef = useRef<HTMLElement>(null);
   const scrollRef = useRef<HTMLDivElement>(null);
   const isInView = useInView(sectionRef, { once: true, margin: '-80px' });
-
+  const user = useSelector(selectUser);
+  const email = user?.email || '';
   const [activeIdx, setActiveIdx] = useState(0);
   const [mode, setMode] = useState<'reviews' | 'feedback'>('reviews');
   const [selectedReview, setSelectedReview] = useState<{
@@ -24,7 +27,9 @@ export default function TestimonialsSection() {
 
   // ====================== API CALLS ======================
   const { data: reviewsData } = useGetReviewsQuery({});
-  const { data: eligibilityData } = useCheckReviewEligibilityQuery({});
+  const { data: eligibilityData } = useCheckReviewEligibilityQuery(undefined, {
+    skip: !email,
+  });
 
   const reviews = reviewsData?.data?.data || [];
 
@@ -320,12 +325,20 @@ export default function TestimonialsSection() {
                         );
                       })
                     ) : (
-                      <div className="flex items-center justify-center h-[400px] text-[#1a1008]/50">
-                        No reviews yet.
+                      <div className="flex flex-col items-center justify-center !h-[400px]   text-center px-4 md:-mt-[200px]">
+                        <motion.div>
+                          <div className="text-[90px] mb-6">🌿</div>
+                          <h3 className="text-3xl font-semibold text-[#1a1008] mb-3">
+                            No Reviews Yet
+                          </h3>
+                          <p className="text-[#1a1008]/60 max-w-sm mx-auto text-lg">
+                            Be the first to share your experience with our wellness services.
+                          </p>
+                        </motion.div>
                       </div>
                     )}
 
-                    <div aria-hidden className="flex-shrink-0 h-[200px]" />
+                    {/* <div aria-hidden className="flex-shrink-0 h-[200px]" /> */}
                   </div>
                 </motion.div>
               ) : (

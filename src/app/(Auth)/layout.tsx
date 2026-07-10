@@ -4,6 +4,7 @@ import { motion, AnimatePresence } from 'motion/react';
 import Image from 'next/image';
 import logo from '@/assets/Logo/Logo.png';
 import { useState, useEffect } from 'react';
+import { usePathname } from 'next/navigation';
 
 const slides = [
   {
@@ -28,7 +29,9 @@ const slides = [
 
 export default function AuthLayout({ children }: { children: React.ReactNode }) {
   const [currentSlide, setCurrentSlide] = useState(0);
-
+  const pathname = usePathname();
+  // Hide logo on register page
+  const isRegisterPage = pathname === '/register';
   useEffect(() => {
     const interval = setInterval(() => {
       setCurrentSlide((prev) => (prev + 1) % slides.length);
@@ -148,7 +151,17 @@ export default function AuthLayout({ children }: { children: React.ReactNode }) 
           >
             {/* Decorative logo ring */}
 
-            <Image src={logo} alt={'Logo'} width={200} height={200} className="object-cover" />
+            <Image
+              src={logo}
+              alt="Logo"
+              width={200}
+              height={200}
+              className={
+                isRegisterPage
+                  ? 'w-[200px] h-[200px] mt-[100px] object-cover'
+                  : 'w-[200px] h-[200px] object-cover'
+              }
+            />
           </motion.div>
 
           {/* Form children */}

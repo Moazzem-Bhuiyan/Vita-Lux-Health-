@@ -26,7 +26,10 @@ export default function BookingDetailsModal({
   if (!open) return null;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 p-4">
+    <div
+      data-lenis-prevent
+      className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 p-4"
+    >
       <div className="bg-white rounded-2xl w-full max-w-4xl max-h-[95vh] overflow-hidden shadow-2xl">
         {/* Header */}
         <div className="flex items-center justify-between border-b px-6 py-4 bg-stone-50">

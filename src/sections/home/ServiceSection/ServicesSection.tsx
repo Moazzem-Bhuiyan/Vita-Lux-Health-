@@ -2,7 +2,7 @@
 
 import { useRef, useState, useEffect, useCallback, useMemo } from 'react';
 import { motion, useInView, AnimatePresence } from 'framer-motion';
-import { ChevronLeft, ChevronRight } from 'lucide-react';
+import { ChevronLeft, ChevronRight, Loader2 } from 'lucide-react';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import { useGetServicesQuery } from '@/redux/api/serviceApi';
@@ -48,12 +48,14 @@ export default function ServicesSection() {
   };
 
   const goNext = useCallback(() => {
+    if (totalSlides <= visibleCount) return;
     setCurrentIndex((prev) => clampedIndex(prev + 1));
-  }, [totalSlides]);
+  }, [totalSlides, visibleCount]);
 
   const goPrev = useCallback(() => {
+    if (totalSlides <= visibleCount) return;
     setCurrentIndex((prev) => clampedIndex(prev - 1));
-  }, [totalSlides]);
+  }, [totalSlides, visibleCount]);
 
   // Auto-play
   const autoPlayRef = useRef<NodeJS.Timeout | null>(null);
@@ -62,7 +64,7 @@ export default function ServicesSection() {
     if (totalSlides > visibleCount) {
       autoPlayRef.current = setInterval(goNext, 4000);
     }
-  }, [goNext, totalSlides]);
+  }, [goNext, totalSlides, visibleCount]);
 
   const stopAutoPlay = useCallback(() => {
     if (autoPlayRef.current) {
@@ -74,16 +76,16 @@ export default function ServicesSection() {
   useEffect(() => {
     startAutoPlay();
     return stopAutoPlay;
-  }, [startAutoPlay, stopAutoPlay, activeCategory]); // Restart when category changes
+  }, [startAutoPlay, stopAutoPlay, activeCategory]);
 
-  // Visible items (infinite loop)
+  // Visible items
   const visibleItems = useMemo(() => {
     if (totalSlides === 0) return [];
     return Array.from(
       { length: visibleCount },
       (_, i) => filteredServices[clampedIndex(currentIndex + i)]
     );
-  }, [filteredServices, currentIndex, totalSlides]);
+  }, [filteredServices, currentIndex, totalSlides, visibleCount]);
 
   const handleServiceClick = (service: any) => {
     router.push(`/service/serviceDetails?slug=${service.slug}`);
@@ -103,8 +105,8 @@ export default function ServicesSection() {
 
   const handleMouseUp = () => {
     if (isDragging) {
-      if (dragOffset < -60) goNext();
-      else if (dragOffset > 60) goPrev();
+      if (dragOffset < -60 && totalSlides > visibleCount) goNext();
+      else if (dragOffset > 60 && totalSlides > visibleCount) goPrev();
       setIsDragging(false);
       setDragOffset(0);
       startAutoPlay();
@@ -118,21 +120,55 @@ export default function ServicesSection() {
 
   const handleTouchEnd = (e: React.TouchEvent) => {
     const diff = e.changedTouches[0].clientX - dragStartX;
-    if (diff < -60) goNext();
-    else if (diff > 60) goPrev();
+    if (diff < -60 && totalSlides > visibleCount) goNext();
+    else if (diff > 60 && totalSlides > visibleCount) goPrev();
     startAutoPlay();
   };
 
+  // ==================== LOADING STATE WITH SPINNER ====================
   if (isLoading) {
     return (
-      <section className="bg-[#1a1008] py-20 text-white text-center">Loading services...</section>
+      <section className="bg-[#1a1008] py-20 md:py-28 text-white" id="services">
+        <div className="max-w-[1440px] mx-auto px-6 md:px-12 flex flex-col items-center justify-center min-h-[500px]">
+          <motion.div
+            animate={{ rotate: 360 }}
+            transition={{ duration: 1.5, repeat: Infinity, ease: 'linear' }}
+          >
+            <Loader2 size={48} className="text-[#c9a96e]" />
+          </motion.div>
+
+          <motion.p
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.3 }}
+            className="mt-6 text-[#c9a96e] text-xl tracking-wide"
+          >
+            Curating wellness experiences...
+          </motion.p>
+        </div>
+      </section>
     );
   }
 
+  // Empty State
   if (isError || allServices.length === 0) {
     return (
-      <section className="bg-[#1a1008] py-20 text-white text-center">
-        Failed to load services
+      <section className="bg-[#1a1008] py-20 md:py-28 text-white" id="services">
+        <div className="max-w-[1440px] mx-auto px-6 md:px-12 text-center">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="max-w-md mx-auto"
+          >
+            <div className="text-6xl mb-6">🌿</div>
+            <h3 className="text-3xl font-semibold mb-4">No Services Available</h3>
+            <p className="text-white/70 text-lg">
+              We are currently updating our wellness offerings.
+              <br />
+              Please check back soon.
+            </p>
+          </motion.div>
+        </div>
       </section>
     );
   }
@@ -202,7 +238,7 @@ export default function ServicesSection() {
             <AnimatePresence mode="popLayout">
               {visibleItems.map((service, i) => (
                 <motion.div
-                  key={`${service.id}-${currentIndex}`}
+                  key={`${service.id}-${currentIndex}-${i}`}
                   initial={{ opacity: 0, y: 30, scale: 0.95 }}
                   animate={{ opacity: 1, y: 0, scale: 1 }}
                   exit={{ opacity: 0, y: -30, scale: 0.95 }}
@@ -210,7 +246,6 @@ export default function ServicesSection() {
                   className="group relative cursor-pointer"
                   onClick={() => handleServiceClick(service)}
                   onContextMenu={(e) => e.preventDefault()}
-                  viewport={{ once: true, amount: 0.2 }}
                 >
                   <div className="relative overflow-hidden rounded-2xl aspect-[4/4.8] shadow-xl">
                     <Image
@@ -241,14 +276,22 @@ export default function ServicesSection() {
           </div>
         </div>
 
-        {/* Navigation */}
+        {/* Navigation Buttons */}
         {totalSlides > visibleCount && (
           <div className="flex items-center justify-center gap-6 mt-12">
-            <button onClick={goPrev} className="nav-btn">
-              <ChevronLeft size={24} />
+            <button
+              onClick={goPrev}
+              className="nav-btn p-4 rounded-full bg-white/5 hover:bg-white/10 border border-white/10 transition-all active:scale-95"
+              aria-label="Previous service"
+            >
+              <ChevronLeft size={28} />
             </button>
-            <button onClick={goNext} className="nav-btn">
-              <ChevronRight size={24} />
+            <button
+              onClick={goNext}
+              className="nav-btn p-4 rounded-full bg-white/5 hover:bg-white/10 border border-white/10 transition-all active:scale-95"
+              aria-label="Next service"
+            >
+              <ChevronRight size={28} />
             </button>
           </div>
         )}

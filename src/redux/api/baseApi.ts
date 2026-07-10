@@ -18,9 +18,9 @@ const baseQuery = fetchBaseQuery({
     if (guestToken) {
       headers.set('token', guestToken);
     }
-    const forgetPasswordToken = localStorage.getItem('forgetPasswordToken');
+    const forgetPasswordToken = localStorage.getItem('verifyEmail-token');
     if (forgetPasswordToken) {
-      headers.set('Authorization', forgetPasswordToken);
+      headers.set('Authorization', `Bearer ${forgetPasswordToken}`);
     }
     return headers;
   },
@@ -52,7 +52,7 @@ const baseQueryWithRefreshToken = async (args: any, api: any, extraOptions: any)
 
 export const baseApi = createApi({
   reducerPath: 'baseApi',
-  tagTypes: ['categories', 'Blogs', 'media', 'Service', 'auth'],
+  tagTypes: ['categories', 'Blogs', 'media', 'Service', 'auth', 'User'],
   baseQuery: baseQueryWithRefreshToken,
   endpoints: () => ({}),
 });

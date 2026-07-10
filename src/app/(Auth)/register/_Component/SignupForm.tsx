@@ -51,18 +51,14 @@ export default function SignupForm() {
   const [errors, setErrors] = useState<Record<string, string>>({});
 
   const router = useRouter();
-
   const [signup, { isLoading }] = useSignUpMutation();
 
   const handleInputChange = (key: string) => (e: React.ChangeEvent<HTMLInputElement>) => {
     setForm((prev) => ({ ...prev, [key]: e.target.value }));
   };
 
-  // Fixed: Handle null value from shadcn Select
   const handleSelectChange = (key: string) => (value: string | null) => {
-    if (value) {
-      setForm((prev) => ({ ...prev, [key]: value }));
-    }
+    if (value) setForm((prev) => ({ ...prev, [key]: value }));
   };
 
   const handleDateChange = (selectedDate: Date | undefined) => {
@@ -113,7 +109,7 @@ export default function SignupForm() {
     setErrors({});
 
     try {
-      const res = await signup(form).unwrap();
+      await signup(form).unwrap();
       router.push('/otpVarify?email=' + encodeURIComponent(form.email));
     } catch (err: any) {
       setErrors({ general: err?.data?.message || 'Registration failed. Please try again.' });
@@ -121,7 +117,7 @@ export default function SignupForm() {
   };
 
   return (
-    <AuthCard className="max-w-[640px]">
+    <AuthCard className="max-w-[640px] ">
       <AuthHeading title="Create Account" subtitle="Join the Aurum Star wellness platform" />
 
       <form onSubmit={handleSubmit} className="flex flex-col gap-4">
@@ -163,78 +159,80 @@ export default function SignupForm() {
           error={errors.phone_number}
         />
 
-        {/* Date Picker */}
+        {/* Improved Date Picker */}
+        {/* Improved Date Picker - White Background + Black Text */}
         <div className="flex flex-col gap-1.5">
           <label className="text-sm text-white/70">Date of Birth</label>
+
           <Popover>
             <PopoverTrigger>
               <button
                 type="button"
                 className={cn(
-                  'w-full flex items-center justify-between rounded-lg border border-white/20 bg-white/5 px-4 py-2.5 text-left font-normal text-white hover:bg-white/10 focus:outline-none focus:border-[#c9a96e]',
-                  !date && 'text-white/50'
+                  'w-full flex items-center justify-between rounded-lg border border-white/30 bg-white px-4 py-3 text-left font-normal text-black hover:bg-white/90 focus:outline-none focus:border-[#c9a96e] focus:ring-1 focus:ring-[#c9a96e]',
+                  !date && 'text-gray-500'
                 )}
               >
-                {date ? format(date, 'PPP') : <span>Pick a date</span>}
-                <CalendarIcon className="h-4 w-4 opacity-70" />
+                {date ? format(date, 'MMMM dd, yyyy') : <span>Pick a date</span>}
+                <CalendarIcon className="h-4 w-4 opacity-70 text-black" />
               </button>
             </PopoverTrigger>
-            <PopoverContent className="w-auto p-0" align="start">
+
+            <PopoverContent
+              className="w-auto p-0 bg-[#1a1008] border border-white/20"
+              align="start"
+            >
               <Calendar
                 mode="single"
                 selected={date}
                 onSelect={handleDateChange}
-                disabled={(d) => d > new Date() || d < new Date('1900-01-01')}
+                disabled={(date) => date > new Date() || date < new Date('1900-01-01')}
+                className="bg-[#1a1008] text-white rounded-lg"
+                classNames={{
+                  months: 'flex flex-col sm:flex-row space-y-4 sm:space-x-4 sm:space-y-0',
+                  month: 'space-y-4',
+
+                  caption_label: 'text-sm font-medium',
+                  nav: 'space-x-1 flex items-center',
+
+                  day: 'h-8 w-8 p-0 font-normal text-white hover:bg-white/10 rounded-md transition-colors',
+                }}
               />
             </PopoverContent>
           </Popover>
+
           {errors.date_of_birth && (
             <p className="text-red-400 text-xs mt-1">{errors.date_of_birth}</p>
           )}
         </div>
 
         {/* Gender & Sex */}
-        {/* Gender & Sex - Consistent Design */}
         <div className="grid grid-cols-2 gap-3">
-          {/* Gender */}
           <div className="flex flex-col gap-1.5">
             <label className="text-sm text-white/70">Gender</label>
             <Select value={form.gender} onValueChange={handleSelectChange('gender')}>
-              <SelectTrigger className="bg-white/5 border !w-full border-white/20 text-white hover:bg-white/10 focus:border-[#c9a96e] focus:ring-1 focus:ring-[#c9a96e]/50 h-11">
+              <SelectTrigger className="bg-white border border-white/20 text-black hover:bg-white/10 focus:border-[#c9a96e] !h-12 w-full">
                 <SelectValue placeholder="Select Gender" />
               </SelectTrigger>
-              <SelectContent className="bg-stone-900 border-white/20 text-white">
-                <SelectItem value="Male" className="focus:bg-white/10">
-                  Male
-                </SelectItem>
-                <SelectItem value="Female" className="focus:bg-white/10">
-                  Female
-                </SelectItem>
-                <SelectItem value="Non-Binary" className="focus:bg-white/10">
-                  Non-Binary
-                </SelectItem>
+              <SelectContent className="bg-[#1a1008] border-white/20 text-white">
+                <SelectItem value="Male">Male</SelectItem>
+                <SelectItem value="Female">Female</SelectItem>
+                <SelectItem value="Non-Binary">Non-Binary</SelectItem>
               </SelectContent>
             </Select>
             {errors.gender && <p className="text-red-400 text-xs mt-1">{errors.gender}</p>}
           </div>
 
-          {/* Sex */}
           <div className="flex flex-col gap-1.5">
             <label className="text-sm text-white/70">Sex</label>
             <Select value={form.sex} onValueChange={handleSelectChange('sex')}>
-              <SelectTrigger className="bg-white/5 border !w-full border-white/20 text-white hover:bg-white/10 focus:border-[#c9a96e] focus:ring-1 focus:ring-[#c9a96e]/50 ">
+              <SelectTrigger className="bg-white border border-white/20 text-black hover:bg-white/10 focus:border-[#c9a96e] !h-12 w-full">
                 <SelectValue placeholder="Select Sex" />
               </SelectTrigger>
-              <SelectContent className="bg-stone-900 border-white/20 text-white">
-                <SelectItem value="Male" className="focus:bg-white/10">
-                  Male
-                </SelectItem>
-                <SelectItem value="Female" className="focus:bg-white/10">
-                  Female
-                </SelectItem>
-                <SelectItem value="Intersex" className="focus:bg-white/10">
-                  Intersex
-                </SelectItem>
+              <SelectContent className="bg-[#1a1008] border-white/20 text-white">
+                <SelectItem value="Male">Male</SelectItem>
+                <SelectItem value="Female">Female</SelectItem>
+                <SelectItem value="Intersex">Intersex</SelectItem>
               </SelectContent>
             </Select>
             {errors.sex && <p className="text-red-400 text-xs mt-1">{errors.sex}</p>}
@@ -298,7 +296,7 @@ export default function SignupForm() {
               Terms of Service
             </Link>{' '}
             and{' '}
-            <Link href="/privacy" className="text-[#c9a96e] hover:underline">
+            <Link href="/privacy-policy" className="text-[#c9a96e] hover:underline">
               Privacy Policy
             </Link>
           </span>

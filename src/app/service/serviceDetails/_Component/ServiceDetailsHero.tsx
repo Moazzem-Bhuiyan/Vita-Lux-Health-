@@ -81,7 +81,7 @@ export function ServiceDetailsHero({
             style={{ animationDelay: '0.35s' }}
           >
             <div
-              className="prose prose-lg max-w-none text-[#1a1008]/70 leading-relaxed"
+              className="prose prose-lg max-w-none text-[#ffffff]/70 leading-relaxed"
               dangerouslySetInnerHTML={{ __html: serviceDetails?.service_details.slice(0, 200) }}
             />
           </p>

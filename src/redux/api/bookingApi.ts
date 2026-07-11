@@ -8,18 +8,21 @@ const bookingApi = baseApi.injectEndpoints({
         method: 'POST',
         body: payload,
       }),
+      invalidatesTags: ['Booking'],
     }),
     getBookings: build.query({
       query: () => ({
         url: '/booking/user-booking',
         method: 'GET',
       }),
+      providesTags: ['Booking'],
     }),
     getBoookingDetailsbyBookingNumber: build.query({
       query: ({ BookingNumber }) => ({
         url: `/booking/user-details/${BookingNumber}`,
         method: 'GET',
       }),
+      providesTags: ['Booking'],
     }),
     rebookingService: build.mutation({
       query: ({ id, payload = {} }) => ({
@@ -27,6 +30,7 @@ const bookingApi = baseApi.injectEndpoints({
         method: 'POST',
         body: payload,
       }),
+      invalidatesTags: ['Booking'],
     }),
 
     cancleBooking: build.mutation({
@@ -35,6 +39,7 @@ const bookingApi = baseApi.injectEndpoints({
         method: 'POST',
         body: payload,
       }),
+      invalidatesTags: ['Booking'],
     }),
   }),
 });

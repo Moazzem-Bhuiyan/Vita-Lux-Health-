@@ -7,12 +7,14 @@ const reviewAPi = baseApi.injectEndpoints({
         url: '/review/get-service-review',
         method: 'GET',
       }),
+      providesTags: ['Review'],
     }),
     checkReviewEligibility: builder.query({
       query: () => ({
         url: '/review/is-review',
         method: 'GET',
       }),
+      providesTags: ['Review'],
     }),
     createReview: builder.mutation({
       query: (data = {}) => ({
@@ -20,6 +22,7 @@ const reviewAPi = baseApi.injectEndpoints({
         method: 'POST',
         body: data,
       }),
+      invalidatesTags: ['Review'],
     }),
   }),
 });

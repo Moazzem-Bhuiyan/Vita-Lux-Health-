@@ -280,7 +280,7 @@ export default function TestimonialsSection() {
                                     <Image
                                       src={
                                         user?.avatar
-                                          ? `http://103.186.20.110:9999/storage/${user.avatar}`
+                                          ? `http://103.186.20.110:9999/${user.avatar}`
                                           : '/nouser.png'
                                       }
                                       alt={user?.name || 'User'}
@@ -301,7 +301,7 @@ export default function TestimonialsSection() {
                                   <Image
                                     src={
                                       user?.avatar
-                                        ? `/storage/${user.avatar}`
+                                        ? `http://103.186.20.110:9999/${user.avatar}`
                                         : '/default-avatar.png'
                                     }
                                     width={40}

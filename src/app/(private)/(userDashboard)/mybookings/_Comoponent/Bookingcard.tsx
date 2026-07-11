@@ -43,8 +43,9 @@ export default function BookingCard({ booking }: { booking: BookingRecord }) {
 
   // Conditions
   const isCompleted = booking.status === 'completed';
+  const isCancelled = booking.status === 'cancelled';
   const canCancel = booking.status === 'confirmed'; // Only confirmed bookings can be cancelled
-  const canRebook = isCompleted || booking.status === 'cancelled';
+  const canRebook = isCompleted || !isCancelled;
 
   return (
     <div className="rounded-2xl border border-stone-100 bg-white p-6 shadow-sm hover:shadow-md transition-all duration-300">

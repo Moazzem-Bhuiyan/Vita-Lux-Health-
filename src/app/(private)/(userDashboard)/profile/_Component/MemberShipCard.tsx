@@ -25,14 +25,6 @@ export default function ProfileHeader({ profile }: { profile: Profile }) {
 
   const [uploadAvatar] = useUploadAvatarMutation();
 
-  const copyId = () => {
-    if (profile.intakeq_client_id) {
-      navigator.clipboard.writeText(profile.intakeq_client_id);
-      setCopied(true);
-      setTimeout(() => setCopied(false), 1500);
-    }
-  };
-
   const handleAvatarClick = () => {
     document.getElementById('avatar-upload')?.click();
   };
@@ -107,13 +99,13 @@ export default function ProfileHeader({ profile }: { profile: Profile }) {
         {/* Right Side - Client ID */}
         {profile.intakeq_client_id && (
           <div className="flex flex-col items-start md:items-end">
-            <button
+            {/* <button
               onClick={copyId}
               className="inline-flex items-center gap-1.5 text-sm text-stone-600 hover:text-stone-900 transition-colors"
             >
               Client ID: #{profile.intakeq_client_id}
               {copied ? <Check size={14} className="text-emerald-600" /> : <Copy size={14} />}
-            </button>
+            </button> */}
           </div>
         )}
       </div>

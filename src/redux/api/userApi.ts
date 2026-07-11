@@ -20,7 +20,7 @@ const UserApi = baseApi.injectEndpoints({
     uploadAvatar: builder.mutation({
       query: ({ fileData }) => ({
         url: '/user/avatar?_method=PUT', // ← Add this
-        method: 'POST', 
+        method: 'POST',
         body: fileData,
         // Important for FormData
         formData: true, // Some setups need this

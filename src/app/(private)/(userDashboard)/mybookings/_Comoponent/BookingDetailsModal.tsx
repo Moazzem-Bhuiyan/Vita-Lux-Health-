@@ -118,12 +118,12 @@ export default function BookingDetailsModal({
 
                 <div className="space-y-4">
                   <div>
-                    <p className="text-xs text-stone-500 mb-1 flex items-center gap-2">
+                    {/* <p className="text-xs text-stone-500 mb-1 flex items-center gap-2">
                       <User className="w-4 h-4" /> Practitioner ID
                     </p>
                     <p className="font-medium font-mono text-sm break-all">
                       {detail?.practitioner_id || 'N/A'}
-                    </p>
+                    </p> */}
                   </div>
 
                   {/* <div>
@@ -165,7 +165,11 @@ export default function BookingDetailsModal({
                     <div>
                       <p className="text-sm text-stone-500 mb-2">Service Description</p>
                       <div className="prose prose-stone text-sm max-h-64 overflow-y-auto bg-white p-4 rounded-xl border">
-                        {service.service_details}
+                        <div
+                          dangerouslySetInnerHTML={{
+                            __html: service.service_details,
+                          }}
+                        />
                       </div>
                     </div>
                   )}

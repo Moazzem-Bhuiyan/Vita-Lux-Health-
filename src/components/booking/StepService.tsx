@@ -31,7 +31,7 @@ export function StepService({
       serviceIds: form.service.serviceIds.filter((sid) => sid !== id),
     });
 
-  const selectedServices = services.filter((s) => form.service.serviceIds.includes(s.id));
+  const selectedServices = services.filter((s) => form.service.serviceIds.includes(String(s.id)));
 
   const selectedLocation = locations.find((l) => l.id === form.service.locationId);
 
@@ -106,6 +106,14 @@ function ServiceMultiSelect({
         ? (services.find((s) => s.id === selectedIds[0])?.name ?? '1 service selected')
         : `${selectedIds.length} services selected`;
 
+  console.log('selectedIds', selectedIds);
+  console.log(
+    services.map((s) => ({
+      id: s.id,
+      checked: selectedIds.includes(s.id),
+    }))
+  );
+
   return (
     <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger className="w-full !h-14">
@@ -125,7 +133,7 @@ function ServiceMultiSelect({
       >
         <div className="max-h-64 overflow-y-auto">
           {services.map((service) => {
-            const checked = selectedIds.includes(service.id);
+            const checked = selectedIds.includes(String(service.id));
             return (
               <button
                 key={service.id}

@@ -124,9 +124,6 @@ export function BookingModal({
     [selectedServices]
   );
 
-  // The one and only way this form gets submitted — everything else
-  // (the old fetch-based submitBooking, the onSubmit prop escape hatch)
-  // has been removed so there's a single source of truth.
   const [submitAppointment, { isLoading: isSubmitting }] = useSubmitBookingMutation();
 
   const updatePersonal =
@@ -209,6 +206,10 @@ export function BookingModal({
       setError('Something went wrong while booking. Please try again.');
     }
   };
+
+  console.log('defaultServiceId:', defaultServiceId);
+  console.log('selectedIds:', form.service.serviceIds);
+  console.log('services:', services);
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>

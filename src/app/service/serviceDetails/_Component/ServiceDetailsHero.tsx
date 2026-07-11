@@ -68,7 +68,7 @@ export function ServiceDetailsHero({
             style={{ animationDelay: '0.5s' }}
           >
             <BookButton
-              defaultServiceId={serviceDetails?.id}
+              serviceId={String(serviceDetails?.id)}
               className="rounded-md bg-white text-black hover:bg-stone-800"
             >
               Book Now

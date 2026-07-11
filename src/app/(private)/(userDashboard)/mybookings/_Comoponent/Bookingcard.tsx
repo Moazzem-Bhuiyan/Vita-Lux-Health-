@@ -1,11 +1,11 @@
-// Updated BookingCard.tsx (only changed parts)
-import { Calendar, CheckCircle2, Clock, Timer, XCircle, X, CalendarClock } from 'lucide-react';
+import { Calendar, CheckCircle2, Clock, Timer, XCircle, CalendarClock } from 'lucide-react';
 import BookingDetailsModal from './BookingDetailsModal';
+import RebookModal from './RebookModal';
+import CancleBooking from './CancleBooking';
 import { BookingRecord } from './MybookingsContainer';
 import { useState } from 'react';
-import RebookModal from './RebookModal';
 
-type BookingStatus = 'completed' | 'upcoming' | 'cancelled' | 'pending';
+type BookingStatus = 'completed' | 'confirmed' | 'cancelled';
 
 export default function BookingCard({ booking }: { booking: BookingRecord }) {
   const STATUS_META: Record<
@@ -17,18 +17,34 @@ export default function BookingCard({ booking }: { booking: BookingRecord }) {
       badgeClass: 'bg-emerald-50 text-emerald-600',
       icon: CheckCircle2,
     },
-    upcoming: { label: 'Upcoming', badgeClass: 'bg-blue-50 text-blue-600', icon: Timer },
-    cancelled: { label: 'Cancelled', badgeClass: 'bg-red-50 text-red-600', icon: XCircle },
-    pending: { label: 'Pending', badgeClass: 'bg-amber-50 text-amber-600', icon: Clock },
+    confirmed: {
+      label: 'Upcoming',
+      badgeClass: 'bg-blue-50 text-blue-600',
+      icon: Timer,
+    },
+    cancelled: {
+      label: 'Cancelled',
+      badgeClass: 'bg-red-50 text-red-600',
+      icon: XCircle,
+    },
   };
 
-  const meta = STATUS_META[booking.status] || STATUS_META.pending;
+  // Safe fallback
+  const meta = STATUS_META[booking.status as BookingStatus] || {
+    label: booking.status || 'Unknown',
+    badgeClass: 'bg-gray-100 text-gray-600',
+    icon: Clock,
+  };
+
   const StatusIcon = meta.icon;
 
   const [bookingDetailsOpen, setBookingDetailsOpen] = useState(false);
-  const [rebookModalOpen, setRebookModalOpen] = useState(false); // ← Changed
+  const [rebookModalOpen, setRebookModalOpen] = useState(false);
 
-  const canCancel = booking.status !== 'completed';
+  // Conditions
+  const isCompleted = booking.status === 'completed';
+  const canCancel = booking.status === 'confirmed'; // Only confirmed bookings can be cancelled
+  const canRebook = isCompleted || booking.status === 'cancelled';
 
   return (
     <div className="rounded-2xl border border-stone-100 bg-white p-6 shadow-sm hover:shadow-md transition-all duration-300">
@@ -70,42 +86,33 @@ export default function BookingCard({ booking }: { booking: BookingRecord }) {
             View Details
           </button>
 
-          {/* Rebook Button */}
-          <button
-            onClick={() => setRebookModalOpen(true)}
-            className="flex items-center gap-2 rounded-xl border border-violet-200 bg-violet-50 px-5 py-2.5 text-sm font-medium text-violet-700 transition-all hover:bg-violet-100 hover:border-violet-300 active:scale-[0.985]"
-          >
-            <CalendarClock className="h-4 w-4" />
-            Rebook
-          </button>
-
-          {canCancel && (
+          {/* Rebook Button - Hidden when status is Completed */}
+          {canRebook && (
             <button
-              onClick={() => {
-                if (confirm('Are you sure you want to cancel this booking?')) {
-                  console.log('Cancelling booking:', booking.booking_number);
-                }
-              }}
-              className="flex items-center gap-2 rounded-xl border border-red-200 bg-red-50 px-5 py-2.5 text-sm font-medium text-red-700 transition-all hover:bg-red-100 hover:border-red-300 active:scale-[0.985]"
+              onClick={() => setRebookModalOpen(true)}
+              className="flex items-center gap-2 rounded-xl border border-violet-200 bg-violet-50 px-5 py-2.5 text-sm font-medium text-violet-700 transition-all hover:bg-violet-100 hover:border-violet-300 active:scale-[0.985]"
             >
-              <X className="h-4 w-4" />
-              Cancel
+              <CalendarClock className="h-4 w-4" />
+              Rebook
             </button>
           )}
+
+          {/* Cancel Button */}
+          {canCancel && <CancleBooking bookingId={booking.id} serviceName={booking.serviceName} />}
         </div>
       </div>
 
+      {/* Modals */}
       <BookingDetailsModal
         open={bookingDetailsOpen}
         setOpen={setBookingDetailsOpen}
         bookingNumber={booking.booking_number}
       />
 
-      {/* Rebook Modal */}
       <RebookModal
         open={rebookModalOpen}
         setOpen={setRebookModalOpen}
-        bookingNumber={booking.booking_number}
+        bookingId={booking.id}
         serviceName={booking.serviceName}
       />
     </div>

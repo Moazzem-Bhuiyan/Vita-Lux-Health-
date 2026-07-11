@@ -107,7 +107,7 @@ const BlogDetailContent = () => {
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.9 }}
             >
-              <Badge label={blog.category?.name} variant="gold" className="mb-6" />
+              <Badge label={blog.category?.name} className="mb-6 bg-white w-full text-center" />
               <h1 className="text-5xl md:text-7xl font-serif text-white leading-[1.05] max-w-5xl">
                 {blog.title}
               </h1>
@@ -136,7 +136,8 @@ const BlogDetailContent = () => {
             <div className="flex items-center gap-2">
               <User size={18} />
               By {blog.user?.name}
-            </div>iu
+            </div>
+
             <div className="flex items-center gap-2">
               <Clock size={18} />5 min read
             </div>

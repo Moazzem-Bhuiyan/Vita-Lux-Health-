@@ -1,14 +1,11 @@
 'use client';
 
-import Link from 'next/link';
-import { Calendar,  Loader2, Timer, XCircle } from 'lucide-react';
+import { Calendar, Loader2, Timer, XCircle } from 'lucide-react';
 import { useGetBookingsQuery } from '@/redux/api/bookingApi';
-import BookingDetailsModal from './BookingDetailsModal';
-import { useState } from 'react';
 import { StatCard } from './StatCard';
 import BookingCard from './Bookingcard';
 
-type BookingStatus = 'completed' | 'upcoming' | 'cancelled' | 'pending';
+type BookingStatus = 'completed' | 'confirmed' | 'cancelled' | 'pending';
 
 export interface BookingRecord {
   id: string | number;
@@ -50,9 +47,8 @@ export default function MyBookingsPage() {
 
   const stats = {
     completed: bookings.filter((b) => b.status === 'completed').length,
-    upcoming: bookings.filter((b) => b.status === 'upcoming').length,
+    upcoming: bookings.filter((b) => b.status === 'confirmed').length,
     cancelled: bookings.filter((b) => b.status === 'cancelled').length,
-    pending: bookings.filter((b) => b.status === 'pending').length,
   };
 
   return (
@@ -68,7 +64,6 @@ export default function MyBookingsPage() {
       <div className="mt-6 grid grid-cols-1 gap-4 sm:grid-cols-4">
         <StatCard label="Completed" value={stats.completed} tone="emerald" />
         <StatCard label="Upcoming" value={stats.upcoming} tone="blue" />
-        <StatCard label="Pending" value={stats.pending} tone="amber" />
         <StatCard label="Cancelled" value={stats.cancelled} tone="red" />
       </div>
 

@@ -21,6 +21,21 @@ const bookingApi = baseApi.injectEndpoints({
         method: 'GET',
       }),
     }),
+    rebookingService: build.mutation({
+      query: ({ id, payload = {} }) => ({
+        url: `/booking/rebooking/${id}`,
+        method: 'POST',
+        body: payload,
+      }),
+    }),
+
+    cancleBooking: build.mutation({
+      query: ({ id, payload = {} }) => ({
+        url: `/booking/cancel/${id}?_method=PUT`,
+        method: 'POST',
+        body: payload,
+      }),
+    }),
   }),
 });
 
@@ -28,4 +43,6 @@ export const {
   useGetBookingsQuery,
   useSubmitBookingMutation,
   useGetBoookingDetailsbyBookingNumberQuery,
+  useRebookingServiceMutation,
+  useCancleBookingMutation,
 } = bookingApi;

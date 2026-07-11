@@ -31,7 +31,7 @@ export function Hero() {
           >
             <div className="w-8 sm:w-12 h-px bg-gold-500" />
             <span className="font-sans text-[9px] sm:text-[10px] tracking-[0.22em] sm:tracking-[0.3em] uppercase text-white font-medium">
-              Luxury · Wellness · Sanctuary
+              Luxury · Wellness ·
             </span>
           </div>
 

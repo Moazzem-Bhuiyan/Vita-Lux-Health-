@@ -8,7 +8,8 @@ import { motion } from 'framer-motion';
 import { Calendar, Clock, User } from 'lucide-react';
 import { Badge } from '@/components/ui/Badge';
 
-const IMAGE_BASE_URL =
+const IMAGE_BASE_URL = process.env.NEXT_PUBLIC_IMAGE_URL || 'http://103.186.20.110:9999/storage';
+const IMAGE_BASE_URL_USER =
   process.env.NEXT_PUBLIC_IMAGE_URL_USER || 'http://103.186.20.110:9999/storage';
 
 const Skeleton = () => (
@@ -156,12 +157,7 @@ const BlogDetailContent = () => {
           {/* Author */}
           <div className="mt-16 pt-10 border-t flex items-center gap-5">
             <div className="w-16 h-16 rounded-2xl overflow-hidden bg-stone-100 flex-shrink-0">
-              <Image
-                src={`${IMAGE_BASE_URL}/${blog.user?.avatar}`}
-                alt={blog.user?.name || ''}
-                width={64}
-                height={64}
-              />
+              <Image src={blog.user?.avatar} alt={blog.user?.name || ''} width={64} height={64} />
             </div>
             <div>
               <p className="text-xl font-medium">{blog.user?.name}</p>

@@ -4,6 +4,7 @@ interface BadgeProps {
   label: string;
   variant?: 'gold' | 'stone' | 'sage' | 'cream';
   className?: string;
+  status?: string;
 }
 
 export function Badge({ label, variant = 'gold', className }: BadgeProps) {

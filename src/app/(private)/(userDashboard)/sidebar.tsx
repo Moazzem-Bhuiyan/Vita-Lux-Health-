@@ -3,7 +3,7 @@
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import { useDispatch } from 'react-redux';
-import { CalendarCheck, Lock, LogOut, User, X } from 'lucide-react';
+import { CalendarCheck, Lock, LogOut, Star, User, X } from 'lucide-react';
 import { logout } from '@/redux/features/authSlice';
 import { useState } from 'react';
 import ChangePasswordModal from './profile/_Component/Changepassword';
@@ -11,6 +11,7 @@ import ChangePasswordModal from './profile/_Component/Changepassword';
 const NAV_ITEMS = [
   { label: 'Profile', href: '/profile', icon: User },
   { label: 'My Bookings', href: '/mybookings', icon: CalendarCheck },
+  { label: 'My Reviews', href: '/myreviews', icon: Star },
 ] as const;
 
 export function DashboardSidebar() {

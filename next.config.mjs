@@ -20,11 +20,16 @@ const nextConfig = {
         port: '9999',
         pathname: '/avatar/**',
       },
-
-      // Unsplash Images
       {
         protocol: 'https',
         hostname: 'images.unsplash.com',
+      },
+
+      // Amazon S3
+      {
+        protocol: 'https',
+        hostname: 's3.amazonaws.com',
+        pathname: '/**',
       },
     ],
   },
